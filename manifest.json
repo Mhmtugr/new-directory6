@@ -1,0 +1,98 @@
+{
+  "name": "MehmetEndüstriyelTakip",
+  "short_name": "METS",
+  "description": "Orta Gerilim Hücre Üretim Takip Sistemi",
+  "icons": [
+    {
+      "src": "assets/icons/icon-72x72.png",
+      "sizes": "72x72",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "assets/icons/icon-96x96.png",
+      "sizes": "96x96",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "assets/icons/icon-128x128.png",
+      "sizes": "128x128",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "assets/icons/icon-144x144.png",
+      "sizes": "144x144",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "assets/icons/icon-152x152.png",
+      "sizes": "152x152",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "assets/icons/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "assets/icons/icon-384x384.png",
+      "sizes": "384x384",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "assets/icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "start_url": "/",
+  "display": "standalone",
+  "theme_color": "#1e40af",
+  "background_color": "#2c3e50",
+  "orientation": "portrait",
+  "scope": "/",
+  "shortcuts": [
+    {
+      "name": "Siparişler",
+      "short_name": "Siparişler",
+      "description": "Siparişleri görüntüle",
+      "url": "/?tab=orders",
+      "icons": [{ "src": "assets/icons/orders-96x96.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "Üretim Takip",
+      "short_name": "Üretim",
+      "description": "Üretim durumunu görüntüle",
+      "url": "/?tab=production",
+      "icons": [{ "src": "assets/icons/production-96x96.png", "sizes": "96x96" }]
+    }
+  ],
+  "categories": ["business", "productivity", "utilities"],
+  "lang": "tr-TR",
+  "dir": "ltr",
+  "screenshots": [
+    {
+      "src": "assets/screenshots/dashboard.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "MehmetEndüstriyelTakip - Genel Bakış Sayfası"
+    },
+    {
+      "src": "assets/screenshots/orders.png", 
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "MehmetEndüstriyelTakip - Sipariş Yönetimi"
+    }
+  ],
+  "related_applications": [],
+  "prefer_related_applications": false
+}

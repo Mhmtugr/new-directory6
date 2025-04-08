@@ -1,0 +1,300 @@
+<div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">Sipariş Yönetimi</h5>
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#newOrderModal">
+            <i class="bi bi-plus"></i> Yeni Sipariş Ekle
+        </button>
+    </div>
+    <div class="card-body">
+        <div class="mb-3">
+            <div class="row g-2">
+                <div class="col-md-4">
+                    <input type="text" class="form-control" placeholder="Sipariş No Ara...">
+                </div>
+                <div class="col-md-3">
+                    <select class="form-select">
+                        <option selected>Hücre Tipi Seçin</option>
+                        <option>RM 36 CB</option>
+                        <option>RM 36 LB</option>
+                        <option>RM 36 FL</option>
+                        <option>RMU</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <select class="form-select">
+                        <option selected>Durum Seçin</option>
+                        <option>Planlandı</option>
+                        <option>Devam Ediyor</option>
+                        <option>Gecikmiş</option>
+                        <option>Tamamlandı</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <button class="btn btn-outline-secondary w-100">Filtrele</button>
+                </div>
+            </div>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-hover custom-table">
+                <thead>
+                    <tr>
+                        <th>Sipariş No</th>
+                        <th>Müşteri</th>
+                        <th>Hücre Tipi</th>
+                        <th>Miktar</th>
+                        <th>Planlanan Teslim</th>
+                        <th>Durum</th>
+                        <th>İlerleme</th>
+                        <th>İşlemler</th>
+                    </tr>
+                </thead>
+                <tbody id="ordersTableBody">
+                    <tr class="priority-high">
+                        <td>#0424-1251</td>
+                        <td>AYEDAŞ</td>
+                        <td>RM 36 CB</td>
+                        <td>1</td>
+                        <td>15.11.2024</td>
+                        <td><span class="status-badge status-delayed">Gecikiyor</span></td>
+                        <td>
+                            <div class="progress progress-thin">
+                                <div class="progress-bar bg-danger" role="progressbar" style="width: 65%"></div>
+                            </div>
+                        </td>
+                        <td>
+                            <button class="btn btn-sm btn-outline-primary"><i class="bi bi-eye"></i></button>
+                            <button class="btn btn-sm btn-outline-secondary"><i class="bi bi-pencil"></i></button>
+                        </td>
+                    </tr>
+                    <tr class="priority-medium">
+                        <td>#0424-1245</td>
+                        <td>TEİAŞ</td>
+                        <td>RM 36 CB</td>
+                        <td>1</td>
+                        <td>20.11.2024</td>
+                        <td><span class="status-badge status-in-progress">Devam Ediyor</span></td>
+                        <td>
+                            <div class="progress progress-thin">
+                                <div class="progress-bar bg-warning" role="progressbar" style="width: 45%"></div>
+                            </div>
+                        </td>
+                        <td>
+                            <button class="btn btn-sm btn-outline-primary"><i class="bi bi-eye"></i></button>
+                            <button class="btn btn-sm btn-outline-secondary"><i class="bi bi-pencil"></i></button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>#0424-1239</td>
+                        <td>BEDAŞ</td>
+                        <td>RM 36 LB</td>
+                        <td>1</td>
+                        <td>25.11.2024</td>
+                        <td><span class="status-badge status-in-progress">Devam Ediyor</span></td>
+                        <td>
+                            <div class="progress progress-thin">
+                                <div class="progress-bar bg-warning" role="progressbar" style="width: 30%"></div>
+                            </div>
+                        </td>
+                        <td>
+                            <button class="btn btn-sm btn-outline-primary"><i class="bi bi-eye"></i></button>
+                            <button class="btn btn-sm btn-outline-secondary"><i class="bi bi-pencil"></i></button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>#0424-1235</td>
+                        <td>OSMANİYE ELEKTRİK</td>
+                        <td>RM 36 FL</td>
+                        <td>1</td>
+                        <td>30.11.2024</td>
+                        <td><span class="status-badge status-planned">Planlandı</span></td>
+                        <td>
+                            <div class="progress progress-thin">
+                                <div class="progress-bar bg-info" role="progressbar" style="width: 10%"></div>
+                            </div>
+                        </td>
+                        <td>
+                            <button class="btn btn-sm btn-outline-primary"><i class="bi bi-eye"></i></button>
+                            <button class="btn btn-sm btn-outline-secondary"><i class="bi bi-pencil"></i></button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>#0424-1233</td>
+                        <td>ENERJİSA</td>
+                        <td>RM 36 LB</td>
+                        <td>1</td>
+                        <td>05.12.2024</td>
+                        <td><span class="status-badge status-completed">Tamamlandı</span></td>
+                        <td>
+                            <div class="progress progress-thin">
+                                <div class="progress-bar bg-success" role="progressbar" style="width: 100%"></div>
+                            </div>
+                        </td>
+                        <td>
+                            <button class="btn btn-sm btn-outline-primary"><i class="bi bi-eye"></i></button>
+                            <button class="btn btn-sm btn-outline-secondary"><i class="bi bi-pencil"></i></button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <nav aria-label="Page navigation">
+            <ul class="pagination justify-content-center">
+                <li class="page-item disabled">
+                    <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Önceki</a>
+                </li>
+                <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                <li class="page-item">
+                    <a class="page-link" href="#">Sonraki</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</div>
+
+<script type="module">
+    import { apiService } from '../../services/apiService.js';
+    
+    // Sayfa yüklendiğinde siparişleri yükle
+    document.addEventListener('DOMContentLoaded', async () => {
+        try {
+            const orders = await apiService.getOrders();
+            renderOrders(orders);
+        } catch (error) {
+            console.error('Siparişler yüklenirken hata oluştu:', error);
+        }
+    });
+    
+    // Siparişleri tabloya ekle
+    function renderOrders(orders) {
+        const tableBody = document.getElementById('ordersTableBody');
+        if (!tableBody) return;
+        
+        // Tablo içeriğini temizle
+        tableBody.innerHTML = '';
+        
+        if (orders.length === 0) {
+            const emptyRow = document.createElement('tr');
+            emptyRow.innerHTML = `
+                <td colspan="8" class="text-center">Sipariş bulunamadı.</td>
+            `;
+            tableBody.appendChild(emptyRow);
+            return;
+        }
+        
+        // Her sipariş için satır oluştur
+        orders.forEach(order => {
+            const row = document.createElement('tr');
+            
+            // Önceliğe göre sınıf ekle
+            if (order.priority === 'high') {
+                row.classList.add('priority-high');
+            } else if (order.priority === 'medium') {
+                row.classList.add('priority-medium');
+            }
+            
+            // Durum sınıfını belirle
+            let statusClass = '';
+            switch(order.status) {
+                case 'planned':
+                    statusClass = 'status-planned';
+                    break;
+                case 'in-progress':
+                    statusClass = 'status-in-progress';
+                    break;
+                case 'delayed':
+                    statusClass = 'status-delayed';
+                    break;
+                case 'completed':
+                    statusClass = 'status-completed';
+                    break;
+            }
+            
+            // İlerleme çubuğu rengini belirle
+            let progressBarClass = '';
+            if (order.status === 'completed') {
+                progressBarClass = 'bg-success';
+            } else if (order.status === 'delayed') {
+                progressBarClass = 'bg-danger';
+            } else if (order.status === 'in-progress') {
+                progressBarClass = 'bg-warning';
+            } else {
+                progressBarClass = 'bg-info';
+            }
+            
+            // HTML içeriğini oluştur
+            row.innerHTML = `
+                <td>${order.orderNumber}</td>
+                <td>${order.customer}</td>
+                <td>${order.product}</td>
+                <td>${order.quantity}</td>
+                <td>${new Date(order.deliveryDate).toLocaleDateString('tr-TR')}</td>
+                <td><span class="status-badge ${statusClass}">${getStatusText(order.status)}</span></td>
+                <td>
+                    <div class="progress progress-thin">
+                        <div class="progress-bar ${progressBarClass}" role="progressbar" style="width: ${order.progress}%"></div>
+                    </div>
+                </td>
+                <td>
+                    <button class="btn btn-sm btn-outline-primary view-order" data-id="${order._id}"><i class="bi bi-eye"></i></button>
+                    <button class="btn btn-sm btn-outline-secondary edit-order" data-id="${order._id}"><i class="bi bi-pencil"></i></button>
+                </td>
+            `;
+            
+            tableBody.appendChild(row);
+        });
+        
+        // Olay dinleyicilerini ekle
+        addEventListeners();
+    }
+    
+    // Durum metnini döndür
+    function getStatusText(status) {
+        switch(status) {
+            case 'planned':
+                return 'Planlandı';
+            case 'in-progress':
+                return 'Devam Ediyor';
+            case 'delayed':
+                return 'Gecikiyor';
+            case 'completed':
+                return 'Tamamlandı';
+            default:
+                return status;
+        }
+    }
+    
+    // Olay dinleyicilerini ekle
+    function addEventListeners() {
+        // Sipariş detay butonları
+        document.querySelectorAll('.view-order').forEach(btn => {
+            btn.addEventListener('click', async (e) => {
+                const orderId = e.currentTarget.getAttribute('data-id');
+                try {
+                    const orderDetails = await apiService.getOrderDetails(orderId);
+                    // Sipariş detayını göster (modal veya yeni sayfa)
+                    console.log('Sipariş detayları:', orderDetails);
+                    // TODO: Sipariş detay modalını göster
+                } catch (error) {
+                    console.error('Sipariş detayları alınırken hata oluştu:', error);
+                }
+            });
+        });
+        
+        // Sipariş düzenleme butonları
+        document.querySelectorAll('.edit-order').forEach(btn => {
+            btn.addEventListener('click', async (e) => {
+                const orderId = e.currentTarget.getAttribute('data-id');
+                try {
+                    const orderDetails = await apiService.getOrderDetails(orderId);
+                    // Düzenleme formunu aç ve verileri doldur
+                    console.log('Düzenlenecek sipariş:', orderDetails);
+                    // TODO: Sipariş düzenleme modalını göster
+                } catch (error) {
+                    console.error('Sipariş detayları alınırken hata oluştu:', error);
+                }
+            });
+        });
+    }
+</script> 

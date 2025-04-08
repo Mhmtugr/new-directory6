@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Üretim Yönetimi - MehmetEndüstriyelTakip</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <style>
+        .production-container {
+            padding: 20px;
+        }
+        .card {
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .progress {
+            height: 25px;
+        }
+        .table th {
+            background-color: #f8f9fa;
+        }
+        .action-buttons {
+            display: flex;
+            gap: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="production-container">
+        <!-- Üst Başlık ve Butonlar -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>Üretim Yönetimi</h2>
+            <div class="action-buttons">
+                <button id="update-plan-btn" class="btn btn-primary">
+                    <i class="bi bi-calendar-plus"></i> Plan Güncelle
+                </button>
+                <button id="add-report-btn" class="btn btn-success">
+                    <i class="bi bi-file-earmark-plus"></i> Rapor Ekle
+                </button>
+            </div>
+        </div>
+
+        <!-- Üretim Durumu -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div id="production-status">
+                    <!-- Üretim durumu buraya dinamik olarak yüklenecek -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Üretim Planı -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div id="production-plan">
+                    <!-- Üretim planı buraya dinamik olarak yüklenecek -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Üretim Raporları -->
+        <div class="row">
+            <div class="col-12">
+                <div id="production-reports">
+                    <!-- Üretim raporları buraya dinamik olarak yüklenecek -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal'lar -->
+        <div id="update-plan-modal" class="modal fade" tabindex="-1">
+            <!-- Plan güncelleme modalı buraya dinamik olarak yüklenecek -->
+        </div>
+
+        <div id="add-report-modal" class="modal fade" tabindex="-1">
+            <!-- Rapor ekleme modalı buraya dinamik olarak yüklenecek -->
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script type="module">
+        import { initialize } from './production.js';
+        initialize();
+    </script>
+</body>
+</html> 

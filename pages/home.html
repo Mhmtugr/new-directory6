@@ -1,0 +1,204 @@
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="text-muted mb-2">Aktif Siparişler</h6>
+                        <h3 class="mb-0">24</h3>
+                    </div>
+                    <div class="bg-primary bg-opacity-10 p-3 rounded">
+                        <i class="bi bi-file-earmark-text text-primary" style="font-size: 1.5rem;"></i>
+                    </div>
+                </div>
+                <div class="mt-3">
+                    <span class="text-success"><i class="bi bi-arrow-up"></i> 5.2%</span>
+                    <span class="text-muted">geçen aya göre</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="text-muted mb-2">Devam Eden Üretim</h6>
+                        <h3 class="mb-0">18</h3>
+                    </div>
+                    <div class="bg-warning bg-opacity-10 p-3 rounded">
+                        <i class="bi bi-gear text-warning" style="font-size: 1.5rem;"></i>
+                    </div>
+                </div>
+                <div class="mt-3">
+                    <span class="text-danger"><i class="bi bi-arrow-down"></i> 2.1%</span>
+                    <span class="text-muted">geçen aya göre</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="text-muted mb-2">Geciken Siparişler</h6>
+                        <h3 class="mb-0">3</h3>
+                    </div>
+                    <div class="bg-danger bg-opacity-10 p-3 rounded">
+                        <i class="bi bi-exclamation-triangle text-danger" style="font-size: 1.5rem;"></i>
+                    </div>
+                </div>
+                <div class="mt-3">
+                    <span class="text-success"><i class="bi bi-arrow-down"></i> 1.8%</span>
+                    <span class="text-muted">geçen aya göre</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="text-muted mb-2">Tamamlanan Siparişler</h6>
+                        <h3 class="mb-0">42</h3>
+                    </div>
+                    <div class="bg-success bg-opacity-10 p-3 rounded">
+                        <i class="bi bi-check-circle text-success" style="font-size: 1.5rem;"></i>
+                    </div>
+                </div>
+                <div class="mt-3">
+                    <span class="text-success"><i class="bi bi-arrow-up"></i> 8.7%</span>
+                    <span class="text-muted">geçen aya göre</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Üretim Durumu</h5>
+                <div class="dropdown">
+                    <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" id="productionStatusDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        Son 30 Gün
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="productionStatusDropdown">
+                        <li><a class="dropdown-item" href="#">Son 7 Gün</a></li>
+                        <li><a class="dropdown-item" href="#">Son 30 Gün</a></li>
+                        <li><a class="dropdown-item" href="#">Son 90 Gün</a></li>
+                        <li><a class="dropdown-item" href="#">Bu Yıl</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="card-body">
+                <canvas id="productionChart" height="300"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Hücre Tipi Dağılımı</h5>
+            </div>
+            <div class="card-body">
+                <canvas id="cellTypeChart" height="300"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Kritik Malzeme Durumu</h5>
+                <a href="#" class="btn btn-sm btn-outline-primary">Tümünü Gör</a>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Malzeme Kodu</th>
+                                <th>Malzeme Adı</th>
+                                <th>Stok</th>
+                                <th>İhtiyaç</th>
+                                <th>Durum</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="material-critical">
+                                <td>137998%</td>
+                                <td>Siemens 7SR1003-1JA20-2DA0+ZY20 24VDC</td>
+                                <td>2</td>
+                                <td>8</td>
+                                <td><span class="badge bg-danger">Kritik</span></td>
+                            </tr>
+                            <tr class="material-required">
+                                <td>144866%</td>
+                                <td>KAP-80/190-95 Akım Trafosu</td>
+                                <td>3</td>
+                                <td>5</td>
+                                <td><span class="badge bg-warning">Eksik</span></td>
+                            </tr>
+                            <tr class="material-required">
+                                <td>120170%</td>
+                                <td>M480TB/G-027-95.300UN5 Kablo Başlığı</td>
+                                <td>12</td>
+                                <td>15</td>
+                                <td><span class="badge bg-warning">Eksik</span></td>
+                            </tr>
+                            <tr class="material-available">
+                                <td>109367%</td>
+                                <td>582mm Bara</td>
+                                <td>25</td>
+                                <td>18</td>
+                                <td><span class="badge bg-success">Yeterli</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Son Uyarılar</h5>
+                <a href="#" class="btn btn-sm btn-outline-primary">Tümünü Gör</a>
+            </div>
+            <div class="card-body">
+                <div class="list-group">
+                    <a href="#" class="list-group-item list-group-item-action border-danger border-start-0 border-end-0 border-top-0 border-3">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h6 class="mb-1">Teslim Tarihi Gecikmesi</h6>
+                            <small class="text-danger">1 saat önce</small>
+                        </div>
+                        <p class="mb-1">Sipariş No: #0424-1251 - RM 36 CB hücresinin mekanik montajı gecikiyor.</p>
+                        <small class="text-muted">Mekanik Üretim Birimi</small>
+                    </a>
+                    <a href="#" class="list-group-item list-group-item-action border-warning border-start-0 border-end-0 border-top-0 border-3">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h6 class="mb-1">Malzeme Eksikliği</h6>
+                            <small class="text-warning">3 saat önce</small>
+                        </div>
+                        <p class="mb-1">Sipariş No: #0424-1245 için gerekli akım trafosu stokta yok.</p>
+                        <small class="text-muted">Satın Alma Birimi</small>
+                    </a>
+                    <a href="#" class="list-group-item list-group-item-action border-success border-start-0 border-end-0 border-top-0 border-3">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h6 class="mb-1">Sorun Çözüldü</h6>
+                            <small class="text-success">5 saat önce</small>
+                        </div>
+                        <p class="mb-1">Sipariş No: #0424-1239 için kablaj problemi çözüldü.</p>
+                        <small class="text-muted">Kablaj Birimi</small>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div> 

@@ -254,6 +254,103 @@
                 margin-left: 0;
             }
         }
+
+        /* Not ve Uyarı Sistemi için Stil Tanımlamaları */
+        .notification-pill {
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 10px;
+            font-weight: bold;
+            position: absolute;
+            top: 2px;
+            right: 2px;
+        }
+        
+        .notification-yellow {
+            background-color: #ffeb3b;
+            color: #333;
+        }
+        
+        .notification-red {
+            background-color: #f44336;
+            color: white;
+        }
+        
+        .notification-counter {
+            display: inline-block;
+            margin-left: 4px;
+            background-color: rgba(0,0,0,0.1);
+            padding: 0 4px;
+            border-radius: 8px;
+            font-size: 9px;
+        }
+        
+        .order-card {
+            position: relative;
+        }
+        
+        .alert-note {
+            border-left: 4px solid;
+            margin-bottom: 10px;
+            padding: 10px;
+            position: relative;
+        }
+        
+        .alert-note-yellow {
+            border-left-color: #ffeb3b;
+            background-color: #fffde7;
+        }
+        
+        .alert-note-red {
+            border-left-color: #f44336;
+            background-color: #ffebee;
+        }
+        
+        .alert-note-success {
+            border-left-color: #4caf50;
+            background-color: #e8f5e9;
+        }
+        
+        .alert-note .meta {
+            font-size: 0.8em;
+            color: #666;
+            margin-top: 8px;
+        }
+        
+        .alert-note .actions {
+            position: absolute;
+            right: 10px;
+            top: 10px;
+        }
+        
+        .notification-badge.has-alerts {
+            animation: pulse 1.5s infinite;
+        }
+        
+        .department-badge {
+            font-size: 0.75em;
+            font-weight: normal;
+            vertical-align: middle;
+            margin-left: 5px;
+        }
+        
+        .timer-countdown {
+            font-size: 0.8em;
+            color: #d32f2f;
+            font-weight: bold;
+        }
+        
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.2);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
     </style>
 </head>
 <body>
@@ -502,33 +599,60 @@
                         <div class="card">
                             <div class="card-header d-flex justify-content-between align-items-center">
                                 <h5 class="mb-0">Son Uyarılar</h5>
-                                <a href="#" class="btn btn-sm btn-outline-primary">Tümünü Gör</a>
+                                <div>
+                                    <button class="btn btn-sm btn-outline-danger me-2" onclick="showPendingAlerts()">
+                                        <i class="bi bi-exclamation-triangle"></i> Yanıt Bekleyenler
+                                        <span class="badge bg-danger" id="pendingAlertsCount">3</span>
+                                    </button>
+                                    <a href="#" class="btn btn-sm btn-outline-primary" onclick="openAllAlertsModal()">Tümünü Gör</a>
+                                </div>
                             </div>
                             <div class="card-body">
-                                <div class="list-group">
-                                    <a href="#" class="list-group-item list-group-item-action border-danger border-start-0 border-end-0 border-top-0 border-3">
+                                <div class="list-group" id="dashboardAlerts">
+                                    <a href="#" class="list-group-item list-group-item-action border-danger border-start-0 border-end-0 border-top-0 border-3" onclick="viewAlertDetail('ALT-001')">
                                         <div class="d-flex w-100 justify-content-between">
-                                            <h6 class="mb-1">Teslim Tarihi Gecikmesi</h6>
+                                            <h6 class="mb-1">
+                                                <span class="notification-pill notification-red">Kritik</span>
+                                                Teslim Tarihi Gecikmesi
+                                                <span class="badge bg-secondary department-badge">Mekanik Üretim</span>
+                                            </h6>
                                             <small class="text-danger">1 saat önce</small>
                                         </div>
                                         <p class="mb-1">Sipariş No: #0424-1251 - RM 36 CB hücresinin mekanik montajı gecikiyor.</p>
-                                        <small class="text-muted">Mekanik Üretim Birimi</small>
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <small class="text-muted">Yanıt bekleniyor - <span class="timer-countdown">1:45:22</span> kaldı</small>
+                                            <button class="btn btn-sm btn-danger" onclick="respondToAlert('ALT-001', event)">Yanıtla</button>
+                                        </div>
                                     </a>
-                                    <a href="#" class="list-group-item list-group-item-action border-warning border-start-0 border-end-0 border-top-0 border-3">
+                                    <a href="#" class="list-group-item list-group-item-action border-warning border-start-0 border-end-0 border-top-0 border-3" onclick="viewAlertDetail('ALT-002')">
                                         <div class="d-flex w-100 justify-content-between">
-                                            <h6 class="mb-1">Malzeme Eksikliği</h6>
+                                            <h6 class="mb-1">
+                                                <span class="notification-pill notification-yellow">Önemli</span>
+                                                Malzeme Eksikliği
+                                                <span class="badge bg-secondary department-badge">Satın Alma</span>
+                                            </h6>
                                             <small class="text-warning">3 saat önce</small>
                                         </div>
                                         <p class="mb-1">Sipariş No: #0424-1245 için gerekli akım trafosu stokta yok.</p>
-                                        <small class="text-muted">Satın Alma Birimi</small>
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <small class="text-muted">Yanıtlandı - 2 gün içinde tedarik edilecek</small>
+                                            <button class="btn btn-sm btn-secondary" onclick="viewAlertResponses('ALT-002', event)">Yanıtlar</button>
+                                        </div>
                                     </a>
-                                    <a href="#" class="list-group-item list-group-item-action border-success border-start-0 border-end-0 border-top-0 border-3">
+                                    <a href="#" class="list-group-item list-group-item-action border-success border-start-0 border-end-0 border-top-0 border-3" onclick="viewAlertDetail('ALT-003')">
                                         <div class="d-flex w-100 justify-content-between">
-                                            <h6 class="mb-1">Sorun Çözüldü</h6>
+                                            <h6 class="mb-1">
+                                                <span class="notification-pill notification-yellow">Önemli</span>
+                                                Sorun Çözüldü
+                                                <span class="badge bg-secondary department-badge">Kablaj</span>
+                                            </h6>
                                             <small class="text-success">5 saat önce</small>
                                         </div>
                                         <p class="mb-1">Sipariş No: #0424-1239 için kablaj problemi çözüldü.</p>
-                                        <small class="text-muted">Kablaj Birimi</small>
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <small class="text-muted">Çözüldü - Kapandı</small>
+                                            <button class="btn btn-sm btn-success" onclick="viewAlertResponses('ALT-003', event)">Detay</button>
+                                        </div>
                                     </a>
                                 </div>
                             </div>
@@ -697,6 +821,52 @@
 
             <!-- Production Tab -->
             <div class="tab-pane fade" id="production">
+                <!-- Görev Yönetimi Kartı - YENİ -->
+                <div class="row mb-4">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0">Günlük Görev Yönetimi</h5>
+                                <div>
+                                    <button class="btn btn-sm btn-outline-primary" id="refreshTasksBtn">
+                                        <i class="bi bi-arrow-clockwise"></i> Yenile
+                                    </button>
+                                    <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#addTaskModal">
+                                        <i class="bi bi-plus"></i> Yeni Görev
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div id="taskStats" class="mb-4">
+                                    <!-- İstatistikler buraya gelecek -->
+                                </div>
+                                <div class="table-responsive">
+                                    <table id="taskTable" class="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>Görev No</th>
+                                                <th>Sipariş No</th>
+                                                <th>Aşama</th>
+                                                <th>Sorumlu</th>
+                                                <th>Planlanan Süre</th>
+                                                <th>Durum</th>
+                                                <th>İlerleme</th>
+                                                <th>Gecikme Nedeni</th>
+                                                <th>Ek Mesai</th>
+                                                <th>İşlemler</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <!-- Görev listesi buraya gelecek -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Mevcut üretim takibi ve diğer bölümler -->
                 <div class="row">
                     <div class="col-md-8">
                         <div class="card">
@@ -704,52 +874,6 @@
                                 <h5 class="mb-0">Üretim Takip Tablosu</h5>
                                 <div class="btn-group">
                                     <button class="btn btn-sm btn-outline-secondary">Günlük</button>
-                                    <button class="btn btn-sm btn-outline-secondary active">Haftalık</button>
-                                    <button class="btn btn-sm btn-outline-secondary">Aylık</button>
-                                </div>
-                            </div>
-                            <div class="card-body">
-                                <div class="table-responsive">
-                                    <table class="table table-bordered">
-                                        <thead>
-                                            <tr>
-                                                <th>Sipariş No</th>
-                                                <th>Hücre Tipi</th>
-                                                <th>Proje</th>
-                                                <th>Elektrik Tasarım</th>
-                                                <th>Mekanik Tasarım</th>
-                                                <th>Satın Alma</th>
-                                                <th>Mekanik Üretim</th>
-                                                <th>İç Montaj</th>
-                                                <th>Kablaj</th>
-                                                <th>Genel Montaj</th>
-                                                <th>Test</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td>#0424-1251</td>
-                                                <td>RM 36 CB</td>
-                                                <td><span class="badge bg-success"><i class="bi bi-check"></i></span></td>
-                                                <td><span class="badge bg-success"><i class="bi bi-check"></i></span></td>
-                                                <td><span class="badge bg-success"><i class="bi bi-check"></i></span></td>
-                                                <td><span class="badge bg-success"><i class="bi bi-check"></i></span></td>
-                                                <td><span class="badge bg-warning"><i class="bi bi-exclamation-triangle"></i></span></td>
-                                                <td><span class="badge bg-secondary"><i class="bi bi-dash"></i></span></td>
-                                                <td><span class="badge bg-secondary"><i class="bi bi-dash"></i></span></td>
-                                                <td><span class="badge bg-secondary"><i class="bi bi-dash"></i></span></td>
-                                                <td><span class="badge bg-secondary"><i class="bi bi-dash"></i></span></td>
-                                            </tr>
-                                            <tr>
-                                                <td>#0424-1245</td>
-                                                <td>RM 36 CB</td>
-                                                <td><span class="badge bg-success"><i class="bi bi-check"></i></span></td>
-                                                <td><span class="badge bg-success"><i class="bi bi-check"></i></span></td>
-                                                <td><span class="badge bg-success"><i class="bi bi-check"></i></span></td>
-                                                <td><span class="badge bg-warning"><i class="bi bi-exclamation-triangle"></i></span></td>
-                                                <td><span class="badge bg-secondary"><i class="bi bi-dash"></i></span></td>
-                                                <td><span class="badge bg-secondary"><i class="bi bi-dash"></i></span></td>
-                                                <td><span class="badge bg-secondary"><i class="bi bi-dash"></i></span></td>
                                                 <td><span class="badge bg-secondary"><i class="bi bi-dash"></i></span></td>
                                                 <td><span class="badge bg-secondary"><i class="bi bi-dash"></i></span></td>
                                             </tr>
@@ -1231,7 +1355,87 @@
                                                 <canvas id="customerChart" height="250"></canvas>
                                             </div>
                                         </div>
+                                        <div class="card">
+                                            <div class="card-header">
+                                                <h6 class="mb-0">Uyarı Çözüm Analizi</h6>
+                                            </div>
+                                            <div class="card-body">
+                                                <canvas id="alertResolutionChart" height="250"></canvas>
+                                            </div>
+                                        </div>
                                     </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-4">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0">Uyarı ve Çözüm Takip Analizi</h5>
+                                <div class="btn-group">
+                                    <button class="btn btn-sm btn-outline-secondary active">Son 30 Gün</button>
+                                    <button class="btn btn-sm btn-outline-secondary">Son 90 Gün</button>
+                                    <button class="btn btn-sm btn-outline-secondary">Tüm Zamanlar</button>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>Birim</th>
+                                                <th>Toplam Uyarı</th>
+                                                <th>Çözülen</th>
+                                                <th>Çözüm Süresi (Ort.)</th>
+                                                <th>Çözüm Oranı</th>
+                                                <th>Tekrarlayan Sorunlar</th>
+                                                <th>Performans</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="departmentAnalyticsTable">
+                                            <tr>
+                                                <td>Mekanik Üretim</td>
+                                                <td>15</td>
+                                                <td>12</td>
+                                                <td>4.2 saat</td>
+                                                <td>80%</td>
+                                                <td>3</td>
+                                                <td>
+                                                    <div class="progress" style="height: 8px;">
+                                                        <div class="progress-bar bg-success" role="progressbar" style="width: 80%"></div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>Satın Alma</td>
+                                                <td>12</td>
+                                                <td>10</td>
+                                                <td>6.8 saat</td>
+                                                <td>83%</td>
+                                                <td>1</td>
+                                                <td>
+                                                    <div class="progress" style="height: 8px;">
+                                                        <div class="progress-bar bg-success" role="progressbar" style="width: 83%"></div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>Kablaj</td>
+                                                <td>8</td>
+                                                <td>8</td>
+                                                <td>2.1 saat</td>
+                                                <td>100%</td>
+                                                <td>0</td>
+                                                <td>
+                                                    <div class="progress" style="height: 8px;">
+                                                        <div class="progress-bar bg-success" role="progressbar" style="width: 100%"></div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
                         </div>
@@ -1918,6 +2122,217 @@
         </div>
     </div>
 
+    <!-- Not ve Uyarı Sistemi Modalleri -->
+    <div class="modal fade" id="alertDetailModal" tabindex="-1" aria-labelledby="alertDetailModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="alertDetailModalLabel">Uyarı Detayı</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert-detail-container">
+                        <div class="alert" id="alertDetailContent">
+                            <!-- Uyarı detayları buraya JavaScript ile eklenecek -->
+                        </div>
+                        
+                        <div class="alert-note-header mt-4 mb-2">
+                            <h6>Yanıtlar ve Takip</h6>
+                        </div>
+                        
+                        <div id="alertResponsesContainer">
+                            <!-- Yanıtlar buraya JavaScript ile eklenecek -->
+                        </div>
+                    </div>
+                    
+                    <hr>
+                    
+                    <div class="alert-response-form mt-3" id="alertResponseForm">
+                        <h6>Yanıt Ekle</h6>
+                        <form id="addResponseForm">
+                            <div class="mb-3">
+                                <label for="responseType" class="form-label">Yanıt Tipi</label>
+                                <select class="form-select" id="responseType">
+                                    <option value="solved">Sorun Çözüldü</option>
+                                    <option value="in-progress">Üzerinde Çalışılıyor</option>
+                                    <option value="delayed">Ertelendi (Nedeni Belirtin)</option>
+                                    <option value="reassign">Başka Birime Aktarılmalı</option>
+                                    <option value="needs-info">Daha Fazla Bilgi Gerekli</option>
+                                    <option value="cant-solve">Çözülemiyor (Yönetim Kararı Gerekli)</option>
+                                </select>
+                            </div>
+                            <div class="mb-3" id="delayTimeContainer" style="display:none;">
+                                <label for="delayTime" class="form-label">Erteleme Süresi</label>
+                                <select class="form-select" id="delayTime">
+                                    <option value="1">1 Gün</option>
+                                    <option value="2">2 Gün</option>
+                                    <option value="3">3 Gün</option>
+                                    <option value="5">5 Gün</option>
+                                    <option value="7">1 Hafta</option>
+                                    <option value="14">2 Hafta</option>
+                                </select>
+                            </div>
+                            <div class="mb-3" id="reassignDepartmentContainer" style="display:none;">
+                                <label for="reassignDepartment" class="form-label">Sorumlu Birim</label>
+                                <select class="form-select" id="reassignDepartment">
+                                    <option value="sales">Satış</option>
+                                    <option value="design-electrical">Elektrik Tasarım</option>
+                                    <option value="design-mechanical">Mekanik Tasarım</option>
+                                    <option value="purchasing">Satın Alma</option>
+                                    <option value="production-mechanical">Mekanik Üretim</option>
+                                    <option value="production-assembly">Montaj</option>
+                                    <option value="production-wiring">Kablaj</option>
+                                    <option value="quality">Kalite Kontrol</option>
+                                    <option value="testing">Test</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="responseComment" class="form-label">Açıklama</label>
+                                <textarea class="form-control" id="responseComment" rows="3" placeholder="Yanıtınızla ilgili detayları yazın..."></textarea>
+                            </div>
+                            <button type="button" class="btn btn-primary" id="submitAlertResponse">Yanıtı Gönder</button>
+                        </form>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Tüm Uyarılar Modalı -->
+    <div class="modal fade" id="allAlertsModal" tabindex="-1" aria-labelledby="allAlertsModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="allAlertsModalLabel">Tüm Uyarılar</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert-filters mb-3">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <select class="form-select" id="alertTypeFilter">
+                                    <option value="all" selected>Tüm Uyarı Tipleri</option>
+                                    <option value="red">Kritik Uyarılar</option>
+                                    <option value="yellow">Önemli Uyarılar</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <select class="form-select" id="alertStatusFilter">
+                                    <option value="all" selected>Tüm Durumlar</option>
+                                    <option value="pending">Yanıt Bekleyenler</option>
+                                    <option value="inprogress">Çözüm Sürecindekiler</option>
+                                    <option value="resolved">Çözülenler</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <select class="form-select" id="departmentFilter">
+                                    <option value="all" selected>Tüm Birimler</option>
+                                    <option value="sales">Satış</option>
+                                    <option value="design-electrical">Elektrik Tasarım</option>
+                                    <option value="design-mechanical">Mekanik Tasarım</option>
+                                    <option value="purchasing">Satın Alma</option>
+                                    <option value="production-mechanical">Mekanik Üretim</option>
+                                    <option value="production-assembly">Montaj</option>
+                                    <option value="production-wiring">Kablaj</option>
+                                    <option value="quality">Kalite Kontrol</option>
+                                    <option value="testing">Test</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <button class="btn btn-primary w-100" id="applyAlertFilters">Filtrele</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="table-responsive">
+                        <table class="table table-hover" id="allAlertsTable">
+                            <thead>
+                                <tr>
+                                    <th>Uyarı ID</th>
+                                    <th>Sipariş No</th>
+                                    <th>Öncelik</th>
+                                    <th>Konu</th>
+                                    <th>Birim</th>
+                                    <th>Oluşturulma</th>
+                                    <th>Durum</th>
+                                    <th>Kalan Süre</th>
+                                    <th>İşlemler</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Uyarı listesi JavaScript ile doldurulacak -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="exportAlerts">
+                        <i class="bi bi-download"></i> Dışa Aktar
+                    </button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Yeni Uyarı Oluşturma Modalı -->
+    <div class="modal fade" id="createAlertModal" tabindex="-1" aria-labelledby="createAlertModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="createAlertModalLabel">Yeni Uyarı/Not Oluştur</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="createAlertForm">
+                        <input type="hidden" id="alertOrderId" value="">
+                        
+                        <div class="mb-3">
+                            <label for="alertTitle" class="form-label">Konu</label>
+                            <input type="text" class="form-control" id="alertTitle" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="alertDescription" class="form-label">Açıklama</label>
+                            <textarea class="form-control" id="alertDescription" rows="3" required></textarea>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="alertPriority" class="form-label">Öncelik Seviyesi</label>
+                            <select class="form-select" id="alertPriority" required>
+                                <option value="yellow">Önemli (Sarı)</option>
+                                <option value="red">Kritik (Kırmızı)</option>
+                            </select>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="alertDepartment" class="form-label">Sorumlu Birim</label>
+                            <select class="form-select" id="alertDepartment" required>
+                                <option value="" selected disabled>Birim seçin...</option>
+                                <option value="sales">Satış</option>
+                                <option value="design-electrical">Elektrik Tasarım</option>
+                                <option value="design-mechanical">Mekanik Tasarım</option>
+                                <option value="purchasing">Satın Alma</option>
+                                <option value="production-mechanical">Mekanik Üretim</option>
+                                <option value="production-assembly">Montaj</option>
+                                <option value="production-wiring">Kablaj</option>
+                                <option value="quality">Kalite Kontrol</option>
+                                <option value="testing">Test</option>
+                            </select>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                    <button type="button" class="btn btn-primary" id="saveAlertBtn">Uyarıyı Kaydet</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" crossorigin="anonymous"></script>
@@ -1955,1323 +2370,878 @@
     <script src="core/app.js"></script>
     <script src="core/main.js"></script>
     
-    <!-- Initialization Scripts -->
+    <!-- Not ve Uyarı Sistemi JS -->
     <script>
+        // Uyarı Sistemi Veritabanı (LocalStorage'da saklanacak)
+        let alertsDB = {
+            alerts: [
+                {
+                    id: "ALT-001",
+                    orderId: "#0424-1251",
+                    title: "Teslim Tarihi Gecikmesi",
+                    description: "RM 36 CB hücresinin mekanik montajı gecikiyor. Akım trafosu montajında uyumsuzluk tespit edildi.",
+                    priority: "red",
+                    department: "production-mechanical",
+                    departmentName: "Mekanik Üretim",
+                    createdBy: "Ahmet Yılmaz",
+                    createdAt: new Date(Date.now() - 3600000).toISOString(), // 1 saat önce
+                    status: "pending",
+                    deadline: new Date(Date.now() + 6600000).toISOString(), // 3 saat - geçen 1 saat = 2 saat 50 dk
+                    responses: []
+                },
+                {
+                    id: "ALT-002",
+                    orderId: "#0424-1245",
+                    title: "Malzeme Eksikliği",
+                    description: "Sipariş için gerekli akım trafosu stokta yok. İvedi sipariş gerekiyor.",
+                    priority: "yellow",
+                    department: "purchasing",
+                    departmentName: "Satın Alma",
+                    createdBy: "Mehmet Demir",
+                    createdAt: new Date(Date.now() - 10800000).toISOString(), // 3 saat önce
+                    status: "in-progress",
+                    deadline: new Date(Date.now() - 100000).toISOString(), // Süresi geçmiş
+                    responses: [
+                        {
+                            id: "RSP-001",
+                            alertId: "ALT-002",
+                            responseType: "in-progress", 
+                            comment: "Sipariş açıldı, tedarikçi ile görüşüldü. 2 gün içinde teslim edilecek.",
+                            respondedBy: "Ayşe Kaya",
+                            respondedAt: new Date(Date.now() - 9000000).toISOString(),
+                            department: "purchasing"
+                        }
+                    ]
+                },
+                {
+                    id: "ALT-003",
+                    orderId: "#0424-1239",
+                    title: "Sorun Çözüldü",
+                    description: "Kablaj problemi tespit edildi ve çözüldü.",
+                    priority: "yellow",
+                    department: "production-wiring",
+                    departmentName: "Kablaj",
+                    createdBy: "Fatma Şahin",
+                    createdAt: new Date(Date.now() - 18000000).toISOString(), // 5 saat önce
+                    status: "resolved",
+                    deadline: new Date(Date.now() - 7200000).toISOString(),
+                    responses: [
+                        {
+                            id: "RSP-002",
+                            alertId: "ALT-003",
+                            responseType: "solved",
+                            comment: "Problem tespit edildi, kablo değiştirilerek sorun çözüldü.",
+                            respondedBy: "Hasan Yılmaz",
+                            respondedAt: new Date(Date.now() - 16200000).toISOString(),
+                            department: "production-wiring"
+                        }
+                    ]
+                }
+            ]
+        };
+
+        // LocalStorage'dan verileri yükle
+        function loadAlertsFromStorage() {
+            const savedAlerts = localStorage.getItem('mehmetet_alerts');
+            if (savedAlerts) {
+                alertsDB = JSON.parse(savedAlerts);
+            }
+        }
+
+        // Verileri LocalStorage'a kaydet
+        function saveAlertsToStorage() {
+            localStorage.setItem('mehmetet_alerts', JSON.stringify(alertsDB));
+        }
+
+        // Sayfa yüklendiğinde
         document.addEventListener('DOMContentLoaded', function() {
-            // DeepSeek API anahtarını tanımla
-            window.DEEPSEEK_API_KEY = 'sk-3a17ae40b3e445528bc988f04805e54b';
-
-            // DeepSeek modelini globalleştir
-            window.deepseekModel = {
-                apiKey: window.DEEPSEEK_API_KEY,
-                modelName: 'deepseek-chat',
-                temperature: 0.7,
-                maxTokens: 1000
-            };
+            // LocalStorage'dan uyarıları yükle
+            loadAlertsFromStorage();
             
-            // Geçici demoLogin çözümü - global olarak tanımla
-            window.demoLogin = function(email, password) {
-                console.log('Demo giriş yapılıyor...', email || 'demo@example.com');
-                return {
-                    success: true,
-                    user: {
-                        name: 'Demo Kullanıcı',
-                        email: email || 'demo@example.com',
-                        role: 'Yönetici'
-                    }
-                };
-            };
-
-            // initApp fonksiyonu kontrolü
-            if (typeof window.initApp === 'function') {
-                window.initApp();
-            } else {
-                console.error('initApp fonksiyonu bulunamadı! Geçici bir çözüm uygulanıyor.');
-                window.initApp = function() {
-                    console.log('initApp geçici olarak çalıştırıldı.');
-                    setupDashboardCharts();
-                };
-                window.initApp();
-            }
-
-            // Dashboard grafiklerini kurma
-            if (typeof window.setupDashboardCharts === 'function') {
-                window.setupDashboardCharts();
-            } else {
-                console.error('setupDashboardCharts fonksiyonu bulunamadı! Geçici bir çözüm uygulanıyor.');
-                window.setupDashboardCharts = function() {
-                    console.log('setupDashboardCharts geçici olarak çalıştırıldı.');
-                    
-                    // Basit grafik oluşturma
-                    if (typeof Chart !== 'undefined') {
-                        try {
-                            // Üretim grafiği
-                            if (document.getElementById('productionChart')) {
-                                new Chart(document.getElementById('productionChart'), {
-                                    type: 'line',
-                                    data: {
-                                        labels: ['Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran'],
-                                        datasets: [{
-                                            label: 'Tamamlanan',
-                                            data: [12, 19, 15, 20, 18, 15],
-                                            borderColor: '#27ae60',
-                                            backgroundColor: 'rgba(39, 174, 96, 0.1)',
-                                            tension: 0.4
-                                        }, {
-                                            label: 'Planlanan',
-                                            data: [15, 22, 18, 24, 22, 20],
-                                            borderColor: '#3498db',
-                                            backgroundColor: 'rgba(52, 152, 219, 0.1)',
-                                            tension: 0.4
-                                        }]
-                                    }
-                                });
-                            }
-                            
-                            // Hücre tipi grafiği
-                            if (document.getElementById('cellTypeChart')) {
-                                new Chart(document.getElementById('cellTypeChart'), {
-                                    type: 'doughnut',
-                                    data: {
-                                        labels: ['RM 36 CB', 'RM 36 LB', 'RM 36 FL', 'RMU'],
-                                        datasets: [{
-                                            label: 'Hücre Tipi',
-                                            data: [45, 25, 20, 10],
-                                            backgroundColor: [
-                                                'rgba(52, 152, 219, 0.7)',
-                                                'rgba(155, 89, 182, 0.7)',
-                                                'rgba(52, 73, 94, 0.7)',
-                                                'rgba(22, 160, 133, 0.7)'
-                                            ]
-                                        }]
-                                    }
-                                });
-                            }
-                            
-                            // Diğer grafikleri yükle
-                            if (document.getElementById('materialForecastChart')) {
-                                new Chart(document.getElementById('materialForecastChart'), {
-                                    type: 'bar',
-                                    data: {
-                                        labels: ['Siemens Röle', 'Akım Trafosu', 'Kablo Başlığı', 'Bara', 'Kesici'],
-                                        datasets: [{
-                                            label: 'Mevcut Stok',
-                                            data: [2, 3, 12, 25, 8],
-                                            backgroundColor: 'rgba(52, 152, 219, 0.5)'
-                                        }, {
-                                            label: 'İhtiyaç',
-                                            data: [8, 5, 15, 18, 12],
-                                            backgroundColor: 'rgba(231, 76, 60, 0.5)'
-                                        }]
-                                    }
-                                });
-                            }
-                            
-                            if (document.getElementById('efficiencyChart')) {
-                                new Chart(document.getElementById('efficiencyChart'), {
-                                    type: 'line',
-                                    data: {
-                                        labels: ['Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran'],
-                                        datasets: [{
-                                            label: 'Verimlilik (%)',
-                                            data: [75, 78, 80, 79, 82, 85],
-                                            borderColor: '#27ae60',
-                                            backgroundColor: 'rgba(39, 174, 96, 0.1)',
-                                            fill: true
-                                        }]
-                                    }
-                                });
-                            }
-                        } catch (error) {
-                            console.error('Grafik oluşturulurken hata:', error);
-                        }
-                    }
-                };
-                window.setupDashboardCharts();
-            }
-
-            // Chatbot butonunu etkinleştir
-            const chatbotBtn = document.getElementById('ai-chatbot-btn');
-            if (chatbotBtn) {
-                chatbotBtn.addEventListener('click', function() {
-                    // Chatbot modalını göster
-                    const chatModal = new bootstrap.Modal(document.getElementById('aiChatModal'));
-                    chatModal.show();
-                    
-                    // Başlangıç mesajını ekle
-                    const chatMessages = document.getElementById('chatMessages');
-                    if (chatMessages && chatMessages.children.length === 0) {
-                        const aiMessage = document.createElement('div');
-                        aiMessage.className = 'chat-message ai-message';
-                        aiMessage.textContent = 'Merhaba! Ben MehmetEndüstriyelTakip yapay zeka asistanınızım. Size nasıl yardımcı olabilirim?';
-                        chatMessages.appendChild(aiMessage);
-                    }
-                    
-                    // Bildirim işaretini gizle
-                    const badge = document.querySelector('.notification-badge');
-                    if (badge) badge.style.display = 'none';
-                });
-            }
-
-            // Send Chat Button
-            const sendChatBtn = document.getElementById('sendChatBtn');
-            if (sendChatBtn) {
-                sendChatBtn.addEventListener('click', function() {
-                    sendChatMessage();
-                });
-                
-                // Enter tuşu dinleme
-                document.getElementById('aiChatInput')?.addEventListener('keypress', function(e) {
-                    if (e.key === 'Enter') {
-                        sendChatBtn.click();
-                    }
-                });
-            }
-
-            // Chatbot mesaj gönderme işlevi
-            window.sendChatMessage = function() {
-                const chatInput = document.getElementById('aiChatInput');
-                const chatMessages = document.getElementById('chatMessages');
-                
-                if (chatInput && chatMessages && chatInput.value.trim() !== '') {
-                    const userMessage = chatInput.value.trim();
-                    
-                    // Kullanıcı mesajını ekle
-                    const userMessageDiv = document.createElement('div');
-                    userMessageDiv.className = 'chat-message user-message';
-                    userMessageDiv.textContent = userMessage;
-                    chatMessages.appendChild(userMessageDiv);
-                    
-                    // Yükleniyor mesajı
-                    const loadingMessage = document.createElement('div');
-                    loadingMessage.className = 'chat-message ai-message';
-                    loadingMessage.id = 'loading-message';
-                    loadingMessage.innerHTML = '<small><i>Cevap üretiliyor...</i></small>';
-                    chatMessages.appendChild(loadingMessage);
-                    
-                    // Sohbeti aşağıya kaydır
-                    chatMessages.scrollTop = chatMessages.scrollHeight;
-                    
-                    // Input temizle
-                    chatInput.value = '';
-
-                    // DeepSeek API ile AI cevabı al
-                    queryDeepseekAI(userMessage)
-                        .then(aiResponse => {
-                            // Yükleniyor mesajını kaldır
-                            chatMessages.removeChild(document.getElementById('loading-message'));
-                            
-                            // AI mesajını ekle
-                            const aiMessage = document.createElement('div');
-                            aiMessage.className = 'chat-message ai-message';
-                            aiMessage.textContent = aiResponse;
-                            chatMessages.appendChild(aiMessage);
-                            
-                            // Sohbeti kaydır
-                            chatMessages.scrollTop = chatMessages.scrollHeight;
-                        })
-                        .catch(error => {
-                            // Yükleniyor mesajını kaldır
-                            chatMessages.removeChild(document.getElementById('loading-message'));
-                            
-                            // Hata mesajı ekle
-                            const errorMessage = document.createElement('div');
-                            errorMessage.className = 'chat-message ai-message';
-                            errorMessage.innerHTML = '<small class="text-danger">Üzgünüm, bir hata oluştu. Lütfen tekrar deneyin.</small>';
-                            chatMessages.appendChild(errorMessage);
-                            
-                            console.error('AI cevabı alınamadı:', error);
-                        });
-                }
-            };
-
-            // DeepSeek AI API çağrısı
-            window.queryDeepseekAI = async function(userMessage) {
-                try {
-                    const sistemeGirilenVeriler = await getSystemData();
-                    
-                    // Yapay zekadan cevap simülasyonu (gerçek API bağlantısı kurulabilir)
-                    return generateAIResponse(userMessage, sistemeGirilenVeriler);
-                } catch (error) {
-                    console.error('DeepSeek API hatası:', error);
-                    throw error;
-                }
-            };
+            // Dashboard uyarılarını göster
+            updateDashboardAlerts();
             
-            // Sistemdeki verileri getir
-            window.getSystemData = async function() {
-                // Demo verileri (gerçek uygulamada API'den alınacak)
-                return {
-                    orders: [
-                        { id: '#0424-1251', customer: 'AYEDAŞ', cellType: 'RM 36 CB', status: 'Gecikiyor', progress: 65 },
-                        { id: '#0424-1245', customer: 'TEİAŞ', cellType: 'RM 36 CB', status: 'Devam Ediyor', progress: 45 },
-                        { id: '#0424-1239', customer: 'BEDAŞ', cellType: 'RM 36 LB', status: 'Devam Ediyor', progress: 30 },
-                        { id: '#0424-1235', customer: 'OSMANİYE ELEKTRİK', cellType: 'RM 36 FL', status: 'Planlandı', progress: 10 }
-                    ],
-                    materials: [
-                        { code: '137998%', name: 'Siemens 7SR1003-1JA20-2DA0+ZY20 24VDC', stock: 2, required: 8, status: 'Kritik' },
-                        { code: '144866%', name: 'KAP-80/190-95 Akım Trafosu', stock: 3, required: 5, status: 'Düşük' },
-                        { code: '120170%', name: 'M480TB/G-027-95.300UN5 Kablo Başlığı', stock: 12, required: 15, status: 'Düşük' },
-                        { code: '109367%', name: '582mm Bara', stock: 25, required: 18, status: 'Yeterli' }
-                    ],
-                    technicalDocs: [
-                        { name: 'RM 36 CB Teknik Çizim', date: '15.10.2024', content: 'RM 36 CB hücresine ait teknik çizim detayları...' },
-                        { name: 'RM 36 LB Montaj Talimatı', date: '10.10.2024', content: 'RM 36 LB hücresi montaj talimatları...' },
-                        { name: 'Akım Trafosu Seçim Kılavuzu', date: '01.10.2024', content: 'Akım trafolarının seçimine ilişkin teknik bilgiler...' }
-                    ]
-                };
-            };
+            // Bekleyen uyarı sayısını güncelle
+            updatePendingAlertsCount();
             
-            // Yapay zeka cevabı üret
-            window.generateAIResponse = function(userMessage, systemData) {
-                const lowerMessage = userMessage.toLowerCase();
+            // Yanıt tipi değiştiğinde ilgili alanları göster/gizle
+            document.getElementById('responseType').addEventListener('change', function() {
+                const selectedType = this.value;
                 
-                // Siparişlerle ilgili sorular
-                if (lowerMessage.includes('sipariş') || lowerMessage.includes('order')) {
-                    if (lowerMessage.includes('geciken') || lowerMessage.includes('gecikme')) {
-                        return `Sistemde geciken 1 sipariş bulunmaktadır: ${systemData.orders[0].id} no'lu ${systemData.orders[0].customer} firmasına ait ${systemData.orders[0].cellType} hücresi. İlerleme durumu: %${systemData.orders[0].progress}.`;
-                    }
-                    
-                    if (lowerMessage.includes('devam eden') || lowerMessage.includes('üretim')) {
-                        return `Şu anda üretimi devam eden 2 sipariş bulunmaktadır:\n1. ${systemData.orders[1].id} - ${systemData.orders[1].customer} - ${systemData.orders[1].cellType}\n2. ${systemData.orders[2].id} - ${systemData.orders[2].customer} - ${systemData.orders[2].cellType}`;
-                    }
-                    
-                    return `Sistemde toplam 4 aktif sipariş bulunmaktadır. 1 sipariş gecikmiş durumda, 2 sipariş devam ediyor, 1 sipariş ise henüz planlanma aşamasında. Detaylı bilgi için "siparişler" sayfasını inceleyebilirsiniz.`;
+                // Tümünü gizle
+                document.getElementById('delayTimeContainer').style.display = 'none';
+                document.getElementById('reassignDepartmentContainer').style.display = 'none';
+                
+                // Seçime göre göster
+                if (selectedType === 'delayed') {
+                    document.getElementById('delayTimeContainer').style.display = 'block';
                 }
                 
-                // Malzeme sorguları
-                if (lowerMessage.includes('malzeme') || lowerMessage.includes('stok') || lowerMessage.includes('material')) {
-                    if (lowerMessage.includes('kritik') || lowerMessage.includes('acil')) {
-                        return `Kritik seviyede olan malzeme: ${systemData.materials[0].name} (Stok: ${systemData.materials[0].stock}, İhtiyaç: ${systemData.materials[0].required})`;
-                    }
-                    
-                    if (lowerMessage.includes('röle') || lowerMessage.includes('role') || lowerMessage.includes('siemens')) {
-                        return `Siemens röle (kod: ${systemData.materials[0].code}) için mevcut stok ${systemData.materials[0].stock} adet, ancak ihtiyaç ${systemData.materials[0].required} adet. Acilen sipariş verilmesi gerekiyor.`;
-                    }
-                    
-                    return `Mevcut stok durumu: 1 malzeme kritik seviyede, 2 malzeme düşük stokta, 1 malzeme yeterli durumdadır. Kritik malzemeler için "malzeme yönetimi" bölümünden sipariş verebilirsiniz.`;
+                if (selectedType === 'reassign') {
+                    document.getElementById('reassignDepartmentContainer').style.display = 'block';
                 }
-                
-                // Teknik sorular
-                if (lowerMessage.includes('teknik') || lowerMessage.includes('çizim') || lowerMessage.includes('doküman')) {
-                    if (lowerMessage.includes('rm 36 cb')) {
-                        return `RM 36 CB hücresi için teknik çizim Rev.2.1 versiyonu mevcut. Bu hücre tipi 36kV gerilimde çalışır, genellikle 200-400/5-5A 5P20 7,5/15VA özelliklerinde akım trafosu kullanılır. Detaylı teknik şartnameyi teknik dokümanlar bölümünden inceleyebilirsiniz.`;
-                    }
-                    
-                    if (lowerMessage.includes('akım trafo')) {
-                        return `RM 36 CB hücresinde genellikle KAP-80/190-95 (kod: 144866%) veya KAT-85/190-95 (kod: 142227%) tip akım trafoları kullanılmaktadır. Mevcutta 3 adet KAP-80/190-95 stokta bulunuyor, 5 adete ihtiyaç var.`;
-                    }
-                    
-                    return `Sistemde toplam 3 teknik doküman mevcut: ${systemData.technicalDocs[0].name}, ${systemData.technicalDocs[1].name}, ve ${systemData.technicalDocs[2].name}. Bu dokümanları "Teknik Dokümanlar" sayfasından inceleyebilirsiniz.`;
-                }
-                
-                // Genel sorular için yapay zeka cevabı
-                return `Elimdeki bilgilere göre: Sistemde 4 aktif sipariş, 4 farklı malzeme kaydı ve 3 teknik doküman bulunuyor. Daha spesifik bilgi için lütfen daha detaylı bir soru sorun. Örneğin "Geciken siparişler nelerdir?" veya "Kritik malzeme durumu nedir?" gibi.`;
-            };
-
-            // Tab değişikliğini yönet
-            document.querySelectorAll('.nav-link').forEach(tab => {
-                tab.addEventListener('click', function() {
-                    // Aktif sınıfı değiştir
-                    document.querySelectorAll('.nav-link').forEach(t => t.classList.remove('active'));
-                    this.classList.add('active');
-                    
-                    // Tab'ı göster
-                    const targetId = this.getAttribute('href').substring(1);
-                    document.querySelectorAll('.tab-pane').forEach(pane => {
-                        pane.classList.remove('show', 'active');
-                        if (pane.id === targetId) {
-                            pane.classList.add('show', 'active');
-                        }
-                    });
-                });
             });
-
-            // Tooltip'i etkinleştir
-            const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-            tooltipTriggerList.forEach(el => new bootstrap.Tooltip(el));
             
-            // Takvimi başlat
-            if (typeof FullCalendar !== 'undefined' && document.getElementById('productionCalendar')) {
-                const calendar = new FullCalendar.Calendar(document.getElementById('productionCalendar'), {
-                    initialView: 'dayGridWeek',
-                    headerToolbar: {
-                        left: 'prev,next today',
-                        center: 'title',
-                        right: 'dayGridMonth,dayGridWeek'
-                    },
-                    events: [
-                        {
-                            title: '#0424-1251 Mekanik Üretim',
-                            start: '2023-11-06',
-                            end: '2023-11-10',
-                            color: '#e74c3c'
-                        },
-                        {
-                            title: '#0424-1245 Montaj',
-                            start: '2023-11-08',
-                            end: '2023-11-12',
-                            color: '#f39c12'
-                        },
-                        {
-                            title: '#0424-1239 Test',
-                            start: '2023-11-13',
-                            end: '2023-11-15',
-                            color: '#27ae60'
-                        }
-                    ]
-                });
-                calendar.render();
-            }
+            // Uyarı yanıtı gönderme butonuna tıklandığında
+            document.getElementById('submitAlertResponse').addEventListener('click', function() {
+                submitAlertResponse();
+            });
             
-            // Yeni sipariş ekleme işlevi
-            const saveOrderBtn = document.querySelector('#newOrderModal .modal-footer .btn-primary');
-            if (saveOrderBtn) {
-                saveOrderBtn.addEventListener('click', function() {
-                    saveNewOrder();
-                });
-            }
-
-            // Teknik sorgulama butonu
-            const technicalQueryBtn = document.querySelector('#technical .card-body .btn-primary');
-            if (technicalQueryBtn) {
-                technicalQueryBtn.addEventListener('click', function() {
-                    const questionInput = document.getElementById('technicalQuestion');
-                    if (questionInput && questionInput.value.trim() !== '') {
-                        performTechnicalQuery(questionInput.value.trim());
-                    }
-                });
-            }
-
-            console.log('Tüm başlatma adımları tamamlandı!');
+            // Filtrele butonuna tıklandığında
+            document.getElementById('applyAlertFilters').addEventListener('click', function() {
+                filterAlerts();
+            });
+            
+            // Yeni uyarı kaydetme butonuna tıklandığında
+            document.getElementById('saveAlertBtn').addEventListener('click', function() {
+                saveNewAlert();
+            });
+            
+            // 1 dakikada bir süreleri güncelle
+            setInterval(updateCountdowns, 60000);
+            
+            // İlk kez sayfa açıldığında süreleri güncelle
+            updateCountdowns();
+            
+            // Birim bazlı analiz grafiğini oluştur
+            renderDepartmentAnalysisChart();
         });
 
-        // Yeni sipariş ekleme fonksiyonu
-        function saveNewOrder() {
-            // Form verilerini al
-            const orderData = {
-                id: generateOrderId(),
-                customer: document.getElementById('customer').value,
-                cellType: document.getElementById('cellType').value,
-                quantity: document.getElementById('quantity').value,
-                deliveryDate: formatDate(document.getElementById('deliveryDate').value),
-                status: 'Planlandı',
-                progress: 0,
-                priority: 'low'
-            };
+        // Uyarı detaylarını göster
+        function viewAlertDetail(alertId, event) {
+            if (event) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
             
-            // Temel validasyonlar
-            if (orderData.customer === 'Seçiniz' || orderData.cellType === 'Seçiniz' || !orderData.deliveryDate) {
-                alert('Lütfen gerekli alanları doldurun!');
+            const alert = alertsDB.alerts.find(a => a.id === alertId);
+            if (!alert) return;
+            
+            const alertDetailContent = document.getElementById('alertDetailContent');
+            const alertResponsesContainer = document.getElementById('alertResponsesContainer');
+            
+            // Uyarı detaylarını göster
+            alertDetailContent.className = `alert ${alert.priority === 'red' ? 'alert-danger' : 'alert-warning'}`;
+            alertDetailContent.innerHTML = `
+                <h5>${alert.title} <span class="badge ${alert.priority === 'red' ? 'bg-danger' : 'bg-warning'}">${alert.priority === 'red' ? 'Kritik' : 'Önemli'}</span></h5>
+                <p>${alert.description}</p>
+                <div class="d-flex justify-content-between">
+                    <small>Sipariş: ${alert.orderId}</small>
+                    <small>Oluşturan: ${alert.createdBy}</small>
+                    <small>Tarih: ${formatDate(alert.createdAt)}</small>
+                </div>
+                <div class="mt-2">
+                    <span class="badge bg-secondary">${alert.departmentName}</span>
+                    <span class="badge ${getStatusBadgeClass(alert.status)}">${getStatusText(alert.status)}</span>
+                </div>
+            `;
+            
+            // Yanıtları göster
+            alertResponsesContainer.innerHTML = '';
+            if (alert.responses && alert.responses.length > 0) {
+                alert.responses.forEach(response => {
+                    alertResponsesContainer.innerHTML += createResponseHtml(response);
+                });
+            } else {
+                alertResponsesContainer.innerHTML = '<div class="alert alert-light">Henüz yanıt yok.</div>';
+            }
+            
+            // Yanıt formunu göster veya gizle
+            const responseForm = document.getElementById('alertResponseForm');
+            if (alert.status === 'resolved') {
+                responseForm.style.display = 'none';
+            } else {
+                responseForm.style.display = 'block';
+                // Form submit işlevini ayarla
+                document.getElementById('submitAlertResponse').onclick = function() {
+                    submitAlertResponse(alertId);
+                };
+            }
+            
+            // Modal'ı göster
+            const modal = new bootstrap.Modal(document.getElementById('alertDetailModal'));
+            modal.show();
+        }
+
+        // Uyarı yanıtlarını göster
+        function viewAlertResponses(alertId, event) {
+            if (event) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+            
+            viewAlertDetail(alertId);
+        }
+
+        // Uyarıya yanıt ver modalını aç
+        function respondToAlert(alertId, event) {
+            if (event) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+            
+            viewAlertDetail(alertId);
+            
+            // Form alanına odaklan
+            setTimeout(() => {
+                document.getElementById('responseComment').focus();
+            }, 500);
+        }
+
+        // Tüm uyarılar modalını aç
+        function openAllAlertsModal() {
+            const allAlertsTable = document.getElementById('allAlertsTable').querySelector('tbody');
+            allAlertsTable.innerHTML = '';
+            
+            // Tüm uyarıları ekle
+            alertsDB.alerts.forEach(alert => {
+                const row = document.createElement('tr');
+                
+                // Öncelik sınıfı ekle
+                if (alert.priority === 'red') {
+                    row.classList.add('table-danger');
+                } else if (alert.priority === 'yellow') {
+                    row.classList.add('table-warning');
+                }
+                
+                row.innerHTML = `
+                    <td>${alert.id}</td>
+                    <td>${alert.orderId}</td>
+                    <td>
+                        <span class="badge ${alert.priority === 'red' ? 'bg-danger' : 'bg-warning'}">
+                            ${alert.priority === 'red' ? 'Kritik' : 'Önemli'}
+                        </span>
+                    </td>
+                    <td>${alert.title}</td>
+                    <td>${alert.departmentName}</td>
+                    <td>${formatDateShort(alert.createdAt)}</td>
+                    <td>
+                        <span class="badge ${getStatusBadgeClass(alert.status)}">
+                            ${getStatusText(alert.status)}
+                        </span>
+                    </td>
+                    <td>${getRemainingTimeText(alert)}</td>
+                    <td>
+                        <button class="btn btn-sm btn-outline-primary" onclick="viewAlertDetail('${alert.id}')">
+                            <i class="bi bi-eye"></i>
+                        </button>
+                        ${alert.status !== 'resolved' ? 
+                            `<button class="btn btn-sm btn-outline-success ms-1" onclick="respondToAlert('${alert.id}')">
+                                <i class="bi bi-reply"></i>
+                            </button>` : ''}
+                    </td>
+                `;
+                
+                allAlertsTable.appendChild(row);
+            });
+            
+            // Modal'ı göster
+            const modal = new bootstrap.Modal(document.getElementById('allAlertsModal'));
+            modal.show();
+        }
+
+        // Bekleyen uyarıları göster
+        function showPendingAlerts() {
+            // Tüm uyarılar modalını aç
+            openAllAlertsModal();
+            
+            // Bekleyen uyarıları filtrele
+            document.getElementById('alertStatusFilter').value = 'pending';
+            filterAlerts();
+        }
+
+        // Uyarıları filtrele
+        function filterAlerts() {
+            const typeFilter = document.getElementById('alertTypeFilter').value;
+            const statusFilter = document.getElementById('alertStatusFilter').value;
+            const departmentFilter = document.getElementById('departmentFilter').value;
+            
+            const rows = document.getElementById('allAlertsTable').querySelectorAll('tbody tr');
+            
+            rows.forEach(row => {
+                const alertId = row.cells[0].textContent;
+                const alert = alertsDB.alerts.find(a => a.id === alertId);
+                
+                if (!alert) return;
+                
+                let showRow = true;
+                
+                // Tip filtreleme
+                if (typeFilter !== 'all' && alert.priority !== typeFilter) {
+                    showRow = false;
+                }
+                
+                // Durum filtreleme
+                if (statusFilter !== 'all' && alert.status !== statusFilter) {
+                    showRow = false;
+                }
+                
+                // Departman filtreleme
+                if (departmentFilter !== 'all' && alert.department !== departmentFilter) {
+                    showRow = false;
+                }
+                
+                // Satırı göster veya gizle
+                row.style.display = showRow ? '' : 'none';
+            });
+        }
+
+        // Uyarı yanıtı gönder
+        function submitAlertResponse(alertId) {
+            const currentAlert = alertsDB.alerts.find(a => a.id === alertId);
+            if (!currentAlert) return;
+            
+            const responseType = document.getElementById('responseType').value;
+            const comment = document.getElementById('responseComment').value;
+            
+            if (!comment) {
+                alert('Lütfen bir açıklama yazın.');
                 return;
             }
             
-            // Demo verilere ekle
-            addNewOrderToUI(orderData);
+            // Ek alanları kontrol et
+            let additionalData = {};
             
-            // Modalı kapat
-            const modal = bootstrap.Modal.getInstance(document.getElementById('newOrderModal'));
+            if (responseType === 'delayed') {
+                additionalData.delayTime = document.getElementById('delayTime').value;
+            }
+            
+            if (responseType === 'reassign') {
+                additionalData.reassignDepartment = document.getElementById('reassignDepartment').value;
+                additionalData.reassignDepartmentName = document.getElementById('reassignDepartment').options[
+                    document.getElementById('reassignDepartment').selectedIndex
+                ].text;
+            }
+            
+            // Yeni yanıt oluştur
+            const newResponse = {
+                id: `RSP-${Date.now()}`,
+                alertId: currentAlert.id,
+                responseType: responseType,
+                comment: comment,
+                respondedBy: "Aktif Kullanıcı", // Gerçek uygulamada oturum açan kullanıcı
+                respondedAt: new Date().toISOString(),
+                department: "current-department", // Gerçek uygulamada kullanıcının departmanı
+                additionalData: additionalData
+            };
+            
+            // Uyarının durumunu güncelle
+            let newStatus = currentAlert.status;
+            
+            switch (responseType) {
+                case 'solved':
+                    newStatus = 'resolved';
+                    break;
+                case 'in-progress':
+                case 'delayed':
+                case 'needs-info':
+                    newStatus = 'in-progress';
+                    break;
+                case 'reassign':
+                    // Departman değişimi
+                    currentAlert.department = additionalData.reassignDepartment;
+                    currentAlert.departmentName = additionalData.reassignDepartmentName;
+                    // Yeni departman için yeni süre başlat
+                    currentAlert.deadline = new Date(Date.now() + 3 * 60 * 60 * 1000).toISOString(); // 3 saat
+                    newStatus = 'pending';
+                    break;
+                case 'cant-solve':
+                    newStatus = 'escalated';
+                    break;
+            }
+            
+            currentAlert.status = newStatus;
+            
+            // Yanıtı ekle
+            if (!currentAlert.responses) currentAlert.responses = [];
+            currentAlert.responses.push(newResponse);
+            
+            // Verileri kaydet
+            saveAlertsToStorage();
+            
+            // UI güncelle
+            updateDashboardAlerts();
+            updatePendingAlertsCount();
+            
+            // Yanıt formunu temizle
+            document.getElementById('responseComment').value = '';
+            
+            // Modal'ı kapat ve detay modalını yenile
+            viewAlertDetail(alertId);
+            
+            // Bildirim göster
+            showNetworkStatusNotification('Yanıtınız kaydedildi', 'success');
+        }
+
+        // Yeni uyarı oluştur
+        function createNewAlert(orderId) {
+            // Form alanlarını temizle
+            document.getElementById('alertTitle').value = '';
+            document.getElementById('alertDescription').value = '';
+            document.getElementById('alertPriority').value = 'yellow';
+            document.getElementById('alertDepartment').value = '';
+            
+            // Sipariş ID'sini ayarla
+            document.getElementById('alertOrderId').value = orderId;
+            
+            // Modal'ı göster
+            const modal = new bootstrap.Modal(document.getElementById('createAlertModal'));
+            modal.show();
+        }
+
+        // Yeni uyarıyı kaydet
+        function saveNewAlert() {
+            const title = document.getElementById('alertTitle').value;
+            const description = document.getElementById('alertDescription').value;
+            const priority = document.getElementById('alertPriority').value;
+            const department = document.getElementById('alertDepartment').value;
+            const orderId = document.getElementById('alertOrderId').value;
+            
+            if (!title || !description || !department || !orderId) {
+                alert('Lütfen tüm alanları doldurun.');
+                return;
+            }
+            
+            // Departman adını al
+            const departmentName = document.getElementById('alertDepartment').options[
+                document.getElementById('alertDepartment').selectedIndex
+            ].text;
+            
+            // Yeni uyarı oluştur
+            const newAlert = {
+                id: `ALT-${Date.now()}`,
+                orderId: orderId,
+                title: title,
+                description: description,
+                priority: priority,
+                department: department,
+                departmentName: departmentName,
+                createdBy: "Aktif Kullanıcı", // Gerçek uygulamada oturum açan kullanıcı
+                createdAt: new Date().toISOString(),
+                status: "pending",
+                deadline: new Date(Date.now() + 3 * 60 * 60 * 1000).toISOString(), // 3 saat
+                responses: []
+            };
+            
+            // Uyarıyı ekle
+            alertsDB.alerts.push(newAlert);
+            
+            // Verileri kaydet
+            saveAlertsToStorage();
+            
+            // UI güncelle
+            updateDashboardAlerts();
+            updatePendingAlertsCount();
+            
+            // İlgili siparişin kartına uyarı işareti ekle
+            addAlertBadgeToOrder(orderId, priority);
+            
+            // Modal'ı kapat
+            const modal = bootstrap.Modal.getInstance(document.getElementById('createAlertModal'));
             modal.hide();
             
-            // Başarılı mesajı göster
-            alert('Sipariş başarıyla eklendi!');
+            // Bildirim göster
+            showNetworkStatusNotification('Yeni uyarı oluşturuldu', 'success');
         }
 
-        // Yeni sipariş ID'si oluştur
-        function generateOrderId() {
-            const date = new Date();
-            const year = date.getFullYear().toString().substring(2);
-            const month = (date.getMonth() + 1).toString().padStart(2, '0');
-            const randomNum = Math.floor(Math.random() * 100).toString().padStart(2, '0');
-            return `#${year}${month}-${randomNum}`;
-        }
-
-        // Tarihi formatlayarak göster
-        function formatDate(dateString) {
-            if (!dateString) return '';
-            const date = new Date(dateString);
-            return `${date.getDate().toString().padStart(2, '0')}.${(date.getMonth() + 1).toString().padStart(2, '0')}.${date.getFullYear()}`;
-        }
-
-        // Siparişi UI'a ekle 
-        function addNewOrderToUI(orderData) {
-            // Siparişler tablosuna ekle
-            const ordersTable = document.querySelector('#orders table tbody');
-            if (ordersTable) {
-                const newRow = document.createElement('tr');
-                newRow.className = orderData.priority ? `priority-${orderData.priority}` : '';
-                
-                newRow.innerHTML = `
-                    <td>${orderData.id}</td>
-                    <td>${orderData.customer}</td>
-                    <td>${orderData.cellType}</td>
-                    <td>${orderData.quantity}</td>
-                    <td>${orderData.deliveryDate}</td>
-                    <td><span class="status-badge status-planned">${orderData.status}</span></td>
-                    <td>
-                        <div class="progress progress-thin">
-                            <div class="progress-bar bg-info" role="progressbar" style="width: ${orderData.progress}%"></div>
-                        </div>
-                    </td>
-                    <td>
-                        <button class="btn btn-sm btn-outline-primary"><i class="bi bi-eye"></i></button>
-                        <button class="btn btn-sm btn-outline-secondary"><i class="bi bi-pencil"></i></button>
-                    </td>
-                `;
-                
-                ordersTable.prepend(newRow);
-            }
-            
-            // Üretim takip tablosuna ekle
-            const productionTable = document.querySelector('#production .table-bordered tbody');
-            if (productionTable) {
-                const newProductionRow = document.createElement('tr');
-                newProductionRow.innerHTML = `
-                    <td>${orderData.id}</td>
-                    <td>${orderData.cellType}</td>
-                    <td><span class="badge bg-success"><i class="bi bi-check"></i></span></td>
-                    <td><span class="badge bg-secondary"><i class="bi bi-dash"></i></span></td>
-                    <td><span class="badge bg-secondary"><i class="bi bi-dash"></i></span></td>
-                    <td><span class="badge bg-secondary"><i class="bi bi-dash"></i></span></td>
-                    <td><span class="badge bg-secondary"><i class="bi bi-dash"></i></span></td>
-                    <td><span class="badge bg-secondary"><i class="bi bi-dash"></i></span></td>
-                    <td><span class="badge bg-secondary"><i class="bi bi-dash"></i></span></td>
-                    <td><span class="badge bg-secondary"><i class="bi bi-dash"></i></span></td>
-                    <td><span class="badge bg-secondary"><i class="bi bi-dash"></i></span></td>
-                `;
-                
-                productionTable.prepend(newProductionRow);
-            }
-            
-            // Dashboard siparişler sayacını güncelle
-            const orderCountElement = document.querySelector('.card-body h3.mb-0');
-            if (orderCountElement) {
-                const currentCount = parseInt(orderCountElement.textContent);
-                orderCountElement.textContent = (currentCount + 1).toString();
-            }
-        }
-
-        // Teknik sorgulama fonksiyonu
-        function performTechnicalQuery(question) {
-            const responseArea = document.querySelector('#technical .alert-info');
-            const loadingElement = document.createElement('div');
-            loadingElement.innerHTML = '<p class="text-center"><i class="bi bi-gear-fill fa-spin"></i> Cevabınız hazırlanıyor...</p>';
-            
-            responseArea.innerHTML = '';
-            responseArea.appendChild(loadingElement);
-            
-            // Yapay zeka ile analiz et (gerçek API bağlantısı yerine simülasyon)
-            setTimeout(() => {
-                const answer = generateTechnicalAnswer(question);
-                responseArea.innerHTML = `
-                    <h6><i class="bi bi-lightbulb"></i> Yapay Zeka Cevabı:</h6>
-                    <p>${answer.text}</p>
-                    <p class="mb-0">Referans doküman: <a href="#">${answer.reference}</a></p>
-                `;
-                
-                // İlgili dokümanları güncelle
-                updateRelatedDocuments(question);
-            }, 2000);
-        }
-
-        // Teknik cevap üret
-        function generateTechnicalAnswer(question) {
-            const lowerQuestion = question.toLowerCase();
-            
-            if (lowerQuestion.includes('akım trafosu')) {
-                return {
-                    text: 'RM 36 CB hücresinde genellikle 200-400/5-5A 5P20 7,5/15VA veya 300-600/5-5A 5P20 7,5/15VA özelliklerinde toroidal tip akım trafoları kullanılmaktadır. Canias kodları: 144866% (KAP-80/190-95) veya 142227% (KAT-85/190-95). Bu trafolar Orta Gerilim Hücrelerinde koruma ve ölçme amacıyla kullanılır.',
-                    reference: 'RM 36 CB Teknik Şartnamesi Rev.2.1'
-                };
-            } else if (lowerQuestion.includes('bara')) {
-                return {
-                    text: 'OG Hücrelerde kullanılan baralar genellikle elektrolitik bakırdır. RM 36 serisi için 582mm ve 432mm uzunluklarında 40x10mm kesitinde düz bakır baralar kullanılır. Stok kodları: 109367% (582mm) ve 109363% (432mm).',
-                    reference: 'RM 36 Serisi Bara Montaj Kılavuzu Rev.1.8'
-                };
-            } else if (lowerQuestion.includes('motor') || lowerQuestion.includes('ayırıcı')) {
-                return {
-                    text: 'RM 36 serisi hücrelerde kesici ve ayırıcılarda 24VDC motorlar standart olarak kullanılmaktadır. Özel gereksinimler için 48VDC, 110VDC ve 220VAC motorlar da mevcuttur. Çalışma süresi 3-5 saniye arasındadır.',
-                    reference: 'RM 36 Motor Teknik Özellikleri Rev.1.2'
-                };
-            } else {
-                return {
-                    text: 'RM 36 serisi hücreler, 36kV orta gerilim için tasarlanmıştır. Ana bileşenleri: kesici/yük ayırıcı, akım trafosu, gerilim trafosu, koruma rölesi ve bara sisteminden oluşur. Temel hücre tipleri: CB (Kesicili), LB (Yük Ayırıcılı), FL (Sigortalı), RMU (Ring Main Unit).',
-                    reference: 'RM 36 Serisi Genel Teknik Şartname Rev.3.0'
-                };
-            }
-        }
-
-        // İlgili dokümanları güncelle
-        function updateRelatedDocuments(question) {
-            const lowerQuestion = question.toLowerCase();
-            const relatedDocsArea = document.querySelector('#technical .mt-3 ul');
-            
-            if (!relatedDocsArea) return;
-            
-            let documentsList = '';
-            
-            if (lowerQuestion.includes('akım trafosu')) {
-                documentsList = `
-                    <li><a href="#">RM 36 CB Teknik Çizim</a> - Rev.2.1</li>
-                    <li><a href="#">Akım Trafosu Seçim Kılavuzu</a> - Rev.1.3</li>
-                    <li><a href="#">TEDAS-MLZ-2020-069 Teknik Şartname</a></li>
-                `;
-            } else if (lowerQuestion.includes('bara')) {
-                documentsList = `
-                    <li><a href="#">RM 36 Serisi Bara Montaj Kılavuzu</a> - Rev.1.8</li>
-                    <li><a href="#">Bara Kesit Hesaplama Çizelgesi</a> - Rev.2.0</li>
-                    <li><a href="#">Bakır Bara Teknik Özellikleri</a></li>
-                `;
-            } else if (lowerQuestion.includes('motor') || lowerQuestion.includes('ayırıcı')) {
-                documentsList = `
-                    <li><a href="#">RM 36 Motor Teknik Özellikleri</a> - Rev.1.2</li>
-                    <li><a href="#">Motorlu Mekanizma Kurulum Kılavuzu</a> - Rev.1.4</li>
-                    <li><a href="#">Kesici/Ayırıcı Bakım Talimatı</a></li>
-                `;
-            } else {
-                documentsList = `
-                    <li><a href="#">RM 36 Serisi Genel Teknik Şartname</a> - Rev.3.0</li>
-                    <li><a href="#">RM 36 CB Teknik Çizim</a> - Rev.2.1</li>
-                    <li><a href="#">RM 36 LB Montaj Talimatı</a> - Rev.1.3</li>
-                `;
-            }
-            
-            relatedDocsArea.innerHTML = documentsList;
-        }
-
-        // Gerçek DeepSeek API isteği - yapılandırma gerektiğinde kullanılacak
-        async function callDeepSeekAPI(prompt) {
-            try {
-                const apiKey = window.DEEPSEEK_API_KEY;
-                if (!apiKey) {
-                    console.warn('DeepSeek API anahtarı tanımlanmamış');
-                    return null;
+        // Siparişe uyarı rozeti ekle
+        function addAlertBadgeToOrder(orderId, priority) {
+            const orderCards = document.querySelectorAll(`[data-order-id="${orderId}"]`);
+            orderCards.forEach(card => {
+                // Mevcut rozeti kontrol et
+                let badge = card.querySelector('.notification-pill');
+                if (!badge) {
+                    // Yoksa yeni rozet ekle
+                    badge = document.createElement('span');
+                    badge.classList.add('notification-pill');
+                    card.appendChild(badge);
                 }
                 
-                const response = await fetch('https://api.deepseek.com/v1/chat/completions', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${apiKey}`
-                    },
-                    body: JSON.stringify({
-                        model: "deepseek-chat",
-                        messages: [
-                            {
-                                role: "system",
-                                content: "Sen MehmetEndüstriyelTakip sisteminin yapay zeka asistanısın. Orta Gerilim Hücre Üretim Takip Sistemi hakkında uzman bir mühendis olarak görev yapıyorsun. Elektrik, mekanik ve üretim konularında uzmansın."
-                            },
-                            {
-                                role: "user",
-                                content: prompt
-                            }
-                        ],
-                        temperature: 0.7,
-                        max_tokens: 1000
-                    })
-                });
+                // Rozeti güncelle
+                badge.className = `notification-pill notification-${priority}`;
                 
-                if (!response.ok) {
-                    const errorData = await response.json().catch(() => ({}));
-                    console.error('API Yanıt Kodu:', response.status, errorData);
-                    throw new Error(`API Hatası: ${response.status} - ${errorData.error?.message || 'Bilinmeyen hata'}`);
+                // Bu sipariş için toplam uyarı sayısını hesapla
+                const orderAlerts = alertsDB.alerts.filter(alert => alert.orderId === orderId);
+                
+                // Sayıyı rozete ekle
+                if (orderAlerts.length > 1) {
+                    badge.innerHTML = `<span class="notification-counter">${orderAlerts.length}</span>`;
                 }
-                
-                const data = await response.json();
-                
-                if (!data.choices || !data.choices[0] || !data.choices[0].message) {
-                    throw new Error('API yanıtı geçerli veri içermiyor');
-                }
-                
-                return data.choices[0].message.content;
-            } catch (error) {
-                console.error('DeepSeek API isteği başarısız:', error);
-                
-                // Hata yönetimi için eventBus'a bildirim gönder
-                if (window.eventBus) {
-                    window.eventBus.emit('ai:error', {
-                        source: 'deepseek',
-                        message: error.message,
-                        timestamp: new Date().toISOString()
-                    });
-                }
-                
-                // Yedek yanıt mekanizması - yerel yanıt üret
-                return generateAIFallbackResponse(prompt);
-            }
-        }
-        
-        // API başarısız olursa yedek yanıt oluştur
-        function generateAIFallbackResponse(prompt) {
-            console.log('API başarısız, yedek yanıt üretiliyor...');
-            
-            // Önce sistemdeki verileri al
-            return getSystemData()
-                .then(data => {
-                    return `(DeepSeek API bağlantısı başarısız olduğu için yerel yanıt üretildi) ${generateAIResponse(prompt, data)}`;
-                })
-                .catch(() => {
-                    return "Üzgünüm, şu anda sorunuza yanıt veremiyorum. Lütfen daha sonra tekrar deneyin.";
-                });
-        }
-
-        // EventBus ile sistemdeki diğer modülleri bilgilendir
-        function notifySystemModules(event, data) {
-            if (window.eventBus) {
-                window.eventBus.emit(event, data);
-                return true;
-            }
-            return false;
-        }
-        
-        // Teknik doküman arama fonksiyonu 
-        function searchTechnicalDocuments(query) {
-            // DEMO: Gerçek uygulamada bu bir API çağrısı olacaktır
-            return new Promise((resolve) => {
-                setTimeout(() => {
-                    const results = [
-                        { 
-                            name: 'RM 36 CB Teknik Şartnamesi', 
-                            revision: 'Rev.2.1', 
-                            date: '15.03.2023',
-                            department: 'Elektrik Tasarım',
-                            relevance: 0.95
-                        },
-                        { 
-                            name: 'Akım Trafosu Seçim Kılavuzu', 
-                            revision: 'Rev.1.3', 
-                            date: '22.05.2023',
-                            department: 'Elektrik Tasarım',
-                            relevance: 0.87
-                        },
-                        { 
-                            name: 'RM 36 Serisi Genel Katalog', 
-                            revision: 'Rev.4.2', 
-                            date: '10.01.2024',
-                            department: 'Satış',
-                            relevance: 0.76
-                        }
-                    ].filter(doc => {
-                        // Basit filtreleme
-                        const lowerQuery = query.toLowerCase();
-                        const lowerName = doc.name.toLowerCase();
-                        return lowerName.includes(lowerQuery);
-                    });
-                    
-                    resolve(results);
-                }, 500);
             });
         }
-        
-        // Gelişmiş hata yakalama için genel olay dinleyicisi
-        window.addEventListener('error', function(event) {
-            console.error('Genel hata yakalandı:', event.error);
-            
-            // Kritik JS hataları için bildirim gönder
-            if (event.error && event.error.message) {
-                const errorMessage = event.error.message;
-                const errorStack = event.error.stack || '';
-                
-                // Bu tür hatalar sistem kararlılığını etkileyebilir
-                if (errorStack.includes('chart.js') || 
-                    errorStack.includes('bootstrap') || 
-                    errorStack.includes('fullcalendar')) {
-                    
-                    // Sadece UI bileşenleriyle ilgili hatalar - kritik değil
-                    console.warn('UI bileşeni hatası:', errorMessage);
-                } else {
-                    // Daha kritik bir hata olabilir
-                    logError(event.error, 'uncaught');
-                    
-                    if (!errorMessage.includes('Script error.')) { // CORS hatalarını filtrele
-                        showErrorNotification('Teknik bir hata oluştu, lütfen sayfayı yenileyin');
-                    }
-                }
-            }
-            
-            // Hata mesajını engelleme - hata mesajının UI'da görünmesini engellemez
-            // sadece tarayıcı konsolundaki kırmızı hata mesajlarını engeller
-            event.preventDefault();
-        });
-        
-        // Ağ isteklerini izleme
-        const originalFetch = window.fetch;
-        window.fetch = async function(input, init) {
-            const url = typeof input === 'string' ? input : input.url;
-            const startTime = Date.now();
-            
-            try {
-                console.log(`🌐 Ağ isteği başlatıldı: ${url}`);
-                const response = await originalFetch(input, init);
-                
-                // Yanıt süresini ölç
-                const duration = Date.now() - startTime;
-                
-                if (!response.ok) {
-                    console.warn(`⚠️ API yanıt sorunu: ${url} - ${response.status} (${duration}ms)`);
-                    
-                    // API hatalarını analiz et
-                    if (response.status === 401 || response.status === 403) {
-                        // Yetkilendirme hatası
-                        console.error('Yetkilendirme hatası, oturum yenileniyor...');
-                        // Oturum yenileme işlemini başlat
-                    } else if (response.status >= 500) {
-                        // Sunucu hatası - log kaydet ve UI bilgilendir
-                        window.appErrorHandler(
-                            new Error(`Sunucu hatası: ${response.status}`), 
-                            'api'
-                        );
-                    }
-                } else {
-                    console.log(`✅ API yanıtı başarılı: ${url} (${duration}ms)`);
-                }
-                
-                return response;
-            } catch (error) {
-                console.error(`🔥 Ağ isteği başarısız: ${url}`, error);
-                
-                // Ağ hataları için özel işlemler
-                if (error.name === 'AbortError') {
-                    console.log('İstek kullanıcı tarafından iptal edildi');
-                } else if (!navigator.onLine) {
-                    // Çevrimdışı durumu işle
-                    console.log('İnternet bağlantısı yok. İstek çevrimdışı kuyruğa alındı.');
-                    handleOfflineOperation('API_REQUEST', { url, init });
-                }
-                
-                throw error; // Hatayı tekrar fırlat, böylece çağıran kod da yakalayabilir
-            }
-        };
 
-        // Uygulama başlatıldığında çevrimiçi/çevrimdışı durumunu kontrol et
-        if (navigator.onLine) {
-            console.log('Uygulama çevrimiçi başlatıldı');
-            processPendingOperations();
-        } else {
-            console.log('Uygulama çevrimdışı başlatıldı');
-        }
-
-        // Sistem durumu izleme - Performans Metrikleri
-        function monitorSystemPerformance() {
-            // Bellek kullanımı
-            if (performance && performance.memory) {
-                const memUsed = Math.round(performance.memory.usedJSHeapSize / (1024 * 1024));
-                const memTotal = Math.round(performance.memory.totalJSHeapSize / (1024 * 1024));
-                console.log(`Bellek Kullanımı: ${memUsed}MB / ${memTotal}MB`);
+        // Bekleyen uyarı sayısını güncelle
+        function updatePendingAlertsCount() {
+            const pendingAlerts = alertsDB.alerts.filter(alert => 
+                alert.status === 'pending' || (alert.status === 'in-progress' && new Date(alert.deadline) < new Date())
+            );
+            
+            const countElement = document.getElementById('pendingAlertsCount');
+            if (countElement) {
+                countElement.textContent = pendingAlerts.length;
                 
-                // Bellek kullanımı kritik seviyedeyse uyarı ver
-                if (memUsed > memTotal * 0.85) {
-                    console.warn('Bellek kullanımı kritik seviyede: %' + Math.round(memUsed / memTotal * 100));
-                }
-            }
-            
-            // Sayfa yükleme performansı
-            if (performance && performance.getEntriesByType) {
-                const navEntry = performance.getEntriesByType('navigation')[0];
-                if (navEntry) {
-                    console.log(`Sayfa Yükleme Süresi: ${Math.round(navEntry.loadEventEnd)}ms`);
-                    console.log(`İlk İçerik Gösterimi: ${Math.round(navEntry.domContentLoadedEventEnd)}ms`);
-                    
-                    // Uzun süren sayfa yüklemelerini logla
-                    if (navEntry.loadEventEnd > 5000) { // 5 saniyeden uzun
-                        logEvent('PERFORMANCE', {
-                            type: 'SLOW_PAGE_LOAD',
-                            duration: Math.round(navEntry.loadEventEnd),
-                            url: window.location.href
-                        });
-                    }
-                }
-            }
-        }
-        
-        // Olay kayıt fonksiyonu
-        function logEvent(category, data) {
-            const eventLog = {
-                category,
-                timestamp: new Date().toISOString(),
-                data
-            };
-            
-            console.log(`[${category}] Olay kaydedildi:`, data);
-            
-            // EventBus üzerinden bildirim gönder
-            if (window.eventBus) {
-                window.eventBus.emit('system:log', eventLog);
-            }
-            
-            // Geliştirme ortamında sadece konsola yazdır
-            // Üretim ortamında bir analitik servise gönderilebilir
-        }
-        
-        // Service Worker kurulumunu kontrol et
-        function checkServiceWorkerStatus() {
-            if ('serviceWorker' in navigator) {
-                navigator.serviceWorker.getRegistrations().then(registrations => {
-                    if (registrations.length > 0) {
-                        console.log('Kayıtlı Service Worker sayısı:', registrations.length);
-                        registrations.forEach(reg => {
-                            console.log('Service Worker scope:', reg.scope);
-                            console.log('Service Worker durumu:', reg.active ? 'Aktif' : 'Aktif Değil');
-                        });
-                    } else {
-                        console.warn('Kayıtlı Service Worker bulunamadı');
-                        // Service Worker'ı tekrar kaydetmeyi dene
-                        registerServiceWorker();
-                    }
-                });
-            }
-        }
-        
-        // Service Worker'ı kaydet
-        function registerServiceWorker() {
-            if ('serviceWorker' in navigator) {
-                navigator.serviceWorker.register('service-worker.js')
-                    .then(registration => {
-                        console.log('Service Worker kaydı başarılı. Scope:', registration.scope);
-                    })
-                    .catch(error => {
-                        console.error('Service Worker kaydı başarısız:', error);
+                // Eğer bekleyen uyarı varsa animasyon ekle
+                if (pendingAlerts.length > 0) {
+                    document.querySelectorAll('.notification-badge').forEach(badge => {
+                        badge.classList.add('has-alerts');
                     });
+                } else {
+                    document.querySelectorAll('.notification-badge').forEach(badge => {
+                        badge.classList.remove('has-alerts');
+                    });
+                }
             }
         }
-        
-        // Oturum açma işlemi için demo fonksiyonu
-        function loginUser(email, password) {
-            return new Promise((resolve, reject) => {
-                // Gerçek bir API isteği simüle et
-                setTimeout(() => {
-                    if (email && password) {
-                        const user = {
-                            name: 'Test Kullanıcı',
-                            email: email,
-                            role: 'Yönetici',
-                            permissions: ['read', 'write', 'admin'],
-                            lastLogin: new Date().toISOString()
-                        };
-                        
-                        // Oturum bilgisini localStorage'a kaydet
-                        localStorage.setItem('user', JSON.stringify(user));
-                        
-                        if (window.eventBus) {
-                            window.eventBus.emit(window.SystemEvents.USER_LOGIN, user);
-                        }
-                        
-                        resolve(user);
-                    } else {
-                        const error = new Error('Geçersiz e-posta veya şifre');
-                        reject(error);
-                    }
-                }, 500);
+
+        // Dashboard uyarılarını güncelle
+        function updateDashboardAlerts() {
+            const container = document.getElementById('dashboardAlerts');
+            if (!container) return;
+            
+            // En son 3 uyarıyı al
+            const recentAlerts = [...alertsDB.alerts]
+                .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+                .slice(0, 3);
+            
+            container.innerHTML = '';
+            
+            recentAlerts.forEach(alert => {
+                let statusHtml;
+                
+                if (alert.status === 'pending') {
+                    const remainingTime = getRemainingTimeText(alert);
+                    statusHtml = `
+                        <small class="text-muted">Yanıt bekleniyor - <span class="timer-countdown">${remainingTime}</span> kaldı</small>
+                        <button class="btn btn-sm btn-danger" onclick="respondToAlert('${alert.id}', event)">Yanıtla</button>
+                    `;
+                } else if (alert.status === 'in-progress') {
+                    // Son yanıtı göster
+                    const latestResponse = alert.responses[alert.responses.length - 1];
+                    statusHtml = `
+                        <small class="text-muted">Yanıtlandı - ${getResponseSummary(latestResponse)}</small>
+                        <button class="btn btn-sm btn-secondary" onclick="viewAlertResponses('${alert.id}', event)">Yanıtlar</button>
+                    `;
+                } else if (alert.status === 'resolved') {
+                    statusHtml = `
+                        <small class="text-muted">Çözüldü - Kapandı</small>
+                        <button class="btn btn-sm btn-success" onclick="viewAlertResponses('${alert.id}', event)">Detay</button>
+                    `;
+                }
+                
+                const alertHtml = `
+                    <a href="#" class="list-group-item list-group-item-action border-${getStatusColor(alert)} border-start-0 border-end-0 border-top-0 border-3" onclick="viewAlertDetail('${alert.id}', event)">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h6 class="mb-1">
+                                <span class="notification-pill notification-${alert.priority}">${alert.priority === 'red' ? 'Kritik' : 'Önemli'}</span>
+                                ${alert.title}
+                                <span class="badge bg-secondary department-badge">${alert.departmentName}</span>
+                            </h6>
+                            <small class="text-${getStatusColor(alert)}">${formatTimeAgo(alert.createdAt)}</small>
+                        </div>
+                        <p class="mb-1">Sipariş No: ${alert.orderId} - ${alert.description}</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            ${statusHtml}
+                        </div>
+                    </a>
+                `;
+                
+                container.innerHTML += alertHtml;
             });
         }
-        
-        // Sayfa tamamen yüklendikten sonra performans ölçümleri yap
-        window.addEventListener('load', function() {
-            // Kritik olmayan bir operasyon olduğu için timeout ile geciktir
-            setTimeout(() => {
-                monitorSystemPerformance();
-                checkServiceWorkerStatus();
-            }, 2000);
+
+        // Tüm süreleri güncelle
+        function updateCountdowns() {
+            const countdownElements = document.querySelectorAll('.timer-countdown');
             
-            // Çevrimdışı / çevrimiçi olayları dinle
-            window.addEventListener('online', handleOnlineStatus);
-            window.addEventListener('offline', handleOfflineStatus);
-        });
-        
-        // Çevrimiçi durum değişikliği işleyicisi
-        function handleOnlineStatus() {
-            console.log('İnternet bağlantısı kuruldu.');
-            
-            // UI güncellemesi
-            showNetworkStatusNotification('İnternet bağlantısı kuruldu', 'success');
-            
-            // Bekleyen işlemleri işle
-            processPendingOperations();
-            
-            // EventBus bildirimi gönder
-            if (window.eventBus) {
-                window.eventBus.emit(window.SystemEvents.NETWORK_ONLINE, {
-                    timestamp: new Date().toISOString()
-                });
-            }
+            countdownElements.forEach(element => {
+                // İlgili uyarıyı bul
+                const alertItem = element.closest('.list-group-item');
+                if (!alertItem) return;
+                
+                const alertId = alertItem.getAttribute('onclick').split("'")[1];
+                const alert = alertsDB.alerts.find(a => a.id === alertId);
+                
+                if (!alert) return;
+                
+                // Süreyi güncelle
+                element.textContent = getRemainingTimeText(alert);
+                
+                // Süre geçtiyse uyarı ekle
+                if (new Date(alert.deadline) < new Date()) {
+                    element.style.color = '#d32f2f';
+                    element.innerHTML = `<i class="bi bi-alarm"></i> ${element.textContent}`;
+                }
+            });
         }
-        
-        // Çevrimdışı durum değişikliği işleyicisi
-        function handleOfflineStatus() {
-            console.warn('İnternet bağlantısı kesildi! Çevrimdışı modda çalışılıyor.');
+
+        // Yanıt HTML'i oluştur
+        function createResponseHtml(response) {
+            const responseTypeClass = getResponseTypeClass(response.responseType);
+            const responseTypeText = getResponseTypeText(response.responseType);
             
-            // UI güncellemesi
-            showNetworkStatusNotification('İnternet bağlantısı kesildi! Çevrimdışı modda çalışılıyor.', 'warning');
+            let additionalInfoHtml = '';
             
-            // EventBus bildirimi gönder
-            if (window.eventBus) {
-                window.eventBus.emit(window.SystemEvents.NETWORK_OFFLINE, {
-                    timestamp: new Date().toISOString()
-                });
-            }
-        }
-        
-        // Ağ durum bildirimi göster
-        function showNetworkStatusNotification(message, type) {
-            // Bootstrap toast bildirimini göster (eğer varsa)
-            if (typeof bootstrap !== 'undefined' && bootstrap.Toast) {
-                // Toast elementi yoksa oluştur
-                let toastContainer = document.querySelector('.toast-container');
-                if (!toastContainer) {
-                    toastContainer = document.createElement('div');
-                    toastContainer.className = 'toast-container position-fixed bottom-0 end-0 p-3';
-                    document.body.appendChild(toastContainer);
+            if (response.additionalData) {
+                if (response.additionalData.delayTime) {
+                    additionalInfoHtml = `<div class="alert alert-warning py-1 px-2 mt-1 mb-0">
+                        <small><i class="bi bi-hourglass-split"></i> ${response.additionalData.delayTime} gün ertelendi</small>
+                    </div>`;
                 }
                 
-                const toastId = `toast-${Date.now()}`;
-                const toast = document.createElement('div');
-                toast.className = `toast align-items-center text-white bg-${type === 'success' ? 'success' : 'warning'}`;
-                toast.id = toastId;
-                toast.setAttribute('role', 'alert');
-                toast.setAttribute('aria-live', 'assertive');
-                toast.setAttribute('aria-atomic', 'true');
-                
-                toast.innerHTML = `
-                    <div class="d-flex">
-                        <div class="toast-body">
-                            ${message}
-                        </div>
-                        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Kapat"></button>
+                if (response.additionalData.reassignDepartment) {
+                    additionalInfoHtml = `<div class="alert alert-info py-1 px-2 mt-1 mb-0">
+                        <small><i class="bi bi-arrow-right-circle"></i> ${response.additionalData.reassignDepartmentName} birimine aktarıldı</small>
+                    </div>`;
+                }
+            }
+            
+            return `
+                <div class="alert-note ${responseTypeClass} mb-3">
+                    <div class="alert-note-header d-flex justify-content-between">
+                        <span class="badge ${getResponseTypeBadgeClass(response.responseType)}">${responseTypeText}</span>
+                        <small>${formatDateShort(response.respondedAt)}</small>
                     </div>
-                `;
-                
-                toastContainer.appendChild(toast);
-                
-                const bsToast = new bootstrap.Toast(toast);
-                bsToast.show();
-                
-                // Toast kapatıldıktan sonra DOM'dan kaldır
-                toast.addEventListener('hidden.bs.toast', () => {
-                    toast.remove();
-                });
-            } else {
-                // Bootstrap yoksa basit bir alert kullan
-                alert(message);
+                    <p class="mt-2 mb-1">${response.comment}</p>
+                    ${additionalInfoHtml}
+                    <div class="meta">
+                        <small>Yanıtlayan: ${response.respondedBy}</small>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Yardımcı Fonksiyonlar
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleString('tr-TR');
+        }
+        
+        function formatDateShort(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleString('tr-TR', { 
+                day: '2-digit', 
+                month: '2-digit', 
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+        
+        function formatTimeAgo(dateString) {
+            const date = new Date(dateString);
+            const now = new Date();
+            const diff = Math.floor((now - date) / 1000); // saniye cinsinden fark
+            
+            if (diff < 60) return 'Az önce';
+            if (diff < 3600) return `${Math.floor(diff / 60)} dakika önce`;
+            if (diff < 86400) return `${Math.floor(diff / 3600)} saat önce`;
+            return `${Math.floor(diff / 86400)} gün önce`;
+        }
+        
+        function getRemainingTimeText(alert) {
+            if (!alert.deadline) return '';
+            
+            const deadline = new Date(alert.deadline);
+            const now = new Date();
+            
+            // Eğer süre geçtiyse
+            if (deadline < now) {
+                const diff = Math.floor((now - deadline) / 1000); // saniye cinsinden fark
+                if (diff < 3600) return `${Math.floor(diff / 60)} dk gecikmiş`;
+                if (diff < 86400) return `${Math.floor(diff / 3600)} saat gecikmiş`;
+                return `${Math.floor(diff / 86400)} gün gecikmiş`;
+            }
+            
+            // Kalan süre
+            const diff = Math.floor((deadline - now) / 1000);
+            const hours = Math.floor(diff / 3600);
+            const minutes = Math.floor((diff % 3600) / 60);
+            
+            return `${hours}:${minutes.toString().padStart(2, '0')}`;
+        }
+        
+        function getStatusText(status) {
+            switch (status) {
+                case 'pending': return 'Yanıt Bekliyor';
+                case 'in-progress': return 'Çözülüyor';
+                case 'resolved': return 'Çözüldü';
+                case 'escalated': return 'Yönetim Kararı';
+                default: return 'Bilinmeyen';
             }
         }
         
-        // Bekleyen işlemleri işle
-        async function processPendingOperations() {
-            try {
-                console.log('Bekleyen işlemler kontrol ediliyor...');
-                
-                // Bekleyen siparişleri kontrol et
-                const pendingOrders = JSON.parse(localStorage.getItem('pendingOrders') || '[]');
-                if (pendingOrders.length > 0) {
-                    console.log(`${pendingOrders.length} bekleyen sipariş bulundu, senkronize ediliyor...`);
-                    
-                    if (window.eventBus) {
-                        window.eventBus.emit(window.SystemEvents.SYNC_STARTED, {
-                            type: 'orders',
-                            count: pendingOrders.length
-                        });
-                    }
-                    
-                    // Service worker senkronizasyonunu kullanabiliyorsa
-                    if ('serviceWorker' in navigator && 'SyncManager' in window) {
-                        try {
-                            const registration = await navigator.serviceWorker.ready;
-                            await registration.sync.register('sync-orders');
-                            console.log('Sipariş senkronizasyonu service worker üzerinden başlatıldı');
-                        } catch (err) {
-                            console.error('Service worker sync kaydı başarısız:', err);
-                            // Manuel senkronizasyon
-                            await sendPendingOrdersToServer(pendingOrders);
-                        }
-                    } else {
-                        // Service worker desteklemiyorsa manuel gönder
-                        await sendPendingOrdersToServer(pendingOrders);
-                    }
-                }
-                
-                // Diğer bekleyen işlemleri kontrol et (malzeme, doküman, vb.)
-                await checkPendingMaterials();
-                await checkPendingDocuments();
-                
-                console.log('Bekleyen işlemler tamamlandı');
-                
-            } catch (error) {
-                console.error('Bekleyen işlemleri işlerken hata:', error);
-                
-                if (window.eventBus) {
-                    window.eventBus.emit(window.SystemEvents.SYNC_FAILED, {
-                        error: error.message
-                    });
-                }
+        function getStatusBadgeClass(status) {
+            switch (status) {
+                case 'pending': return 'bg-danger';
+                case 'in-progress': return 'bg-warning';
+                case 'resolved': return 'bg-success';
+                case 'escalated': return 'bg-info';
+                default: return 'bg-secondary';
             }
         }
         
-        // Bekleyen siparişleri sunucuya gönder
-        async function sendPendingOrdersToServer(pendingOrders) {
-            if (!pendingOrders || pendingOrders.length === 0) return;
+        function getStatusColor(alert) {
+            switch (alert.status) {
+                case 'pending': return 'danger';
+                case 'in-progress': return 'warning';
+                case 'resolved': return 'success';
+                case 'escalated': return 'info';
+                default: return 'secondary';
+            }
+        }
+        
+        function getResponseTypeClass(type) {
+            switch (type) {
+                case 'solved': return 'alert-note-success';
+                case 'in-progress': 
+                case 'needs-info': return 'alert-note-yellow';
+                case 'delayed':
+                case 'reassign':  
+                case 'cant-solve': return 'alert-note-red';
+                default: return 'alert-note-yellow';
+            }
+        }
+        
+        function getResponseTypeBadgeClass(type) {
+            switch (type) {
+                case 'solved': return 'bg-success';
+                case 'in-progress': return 'bg-primary';
+                case 'needs-info': return 'bg-info';
+                case 'delayed': return 'bg-warning';
+                case 'reassign': return 'bg-secondary';
+                case 'cant-solve': return 'bg-danger';
+                default: return 'bg-secondary';
+            }
+        }
+        
+        function getResponseTypeText(type) {
+            switch (type) {
+                case 'solved': return 'Çözüldü';
+                case 'in-progress': return 'Üzerinde Çalışılıyor';
+                case 'needs-info': return 'Bilgi Gerekli';
+                case 'delayed': return 'Ertelendi';
+                case 'reassign': return 'Başka Birime Aktarıldı';
+                case 'cant-solve': return 'Çözülemiyor';
+                default: return type;
+            }
+        }
+        
+        function getResponseSummary(response) {
+            if (!response) return '';
             
-            const successfulOrders = [];
-            const failedOrders = [];
+            switch (response.responseType) {
+                case 'solved': return 'Çözüldü';
+                case 'in-progress': return 'Üzerinde çalışılıyor';
+                case 'needs-info': return 'Daha fazla bilgi gerekli';
+                case 'delayed': 
+                    return response.additionalData?.delayTime ? 
+                        `${response.additionalData.delayTime} gün içinde çözülecek` : 
+                        'Ertelendi';
+                case 'reassign': 
+                    return response.additionalData?.reassignDepartmentName ?
+                        `${response.additionalData.reassignDepartmentName} birimine aktarıldı` :
+                        'Başka birime aktarıldı';
+                case 'cant-solve': return 'Yönetim kararı gerekiyor';
+                default: return response.comment.substring(0, 30) + '...';
+            }
+        }
+
+        // Birim bazlı analiz grafiği
+        function renderDepartmentAnalysisChart() {
+            const ctx = document.getElementById('alertResolutionChart');
+            if (!ctx) return;
             
-            for (const order of pendingOrders) {
+            // Analiz verilerini hesapla
+            const departments = ['Mekanik Üretim', 'Satın Alma', 'Kablaj', 'Elektrik Tasarım', 'Mekanik Tasarım'];
+            const responseTime = [4.2, 6.8, 2.1, 3.5, 5.2]; // saat cinsinden
+            const resolutionRate = [80, 83, 100, 92, 75]; // yüzde cinsinden
+            const recurringIssues = [3, 1, 0, 2, 4]; // adet cinsinden
+            
+            // Grafiği oluştur
+            if (typeof Chart !== 'undefined') {
                 try {
-                    // API'ye gönder
-                    const response = await fetch('/api/orders', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
+                    new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                            labels: departments,
+                            datasets: [
+                                {
+                                    label: 'Ortalama Çözüm Süresi (saat)',
+                                    data: responseTime,
+                                    backgroundColor: 'rgba(54, 162, 235, 0.7)',
+                                    borderColor: 'rgb(54, 162, 235)',
+                                    borderWidth: 1,
+                                    yAxisID: 'y'
+                                },
+                                {
+                                    label: 'Çözüm Oranı (%)',
+                                    data: resolutionRate,
+                                    backgroundColor: 'rgba(75, 192, 192, 0.7)',
+                                    borderColor: 'rgb(75, 192, 192)',
+                                    borderWidth: 1,
+                                    yAxisID: 'y1'
+                                },
+                                {
+                                    label: 'Tekrarlayan Sorunlar (adet)',
+                                    data: recurringIssues,
+                                    backgroundColor: 'rgba(255, 99, 132, 0.7)',
+                                    borderColor: 'rgb(255, 99, 132)',
+                                    borderWidth: 1,
+                                    yAxisID: 'y'
+                                }
+                            ]
                         },
-                        body: JSON.stringify(order)
+                        options: {
+                            responsive: true,
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    position: 'left',
+                                    title: {
+                                        display: true,
+                                        text: 'Saat / Adet'
+                                    }
+                                },
+                                y1: {
+                                    beginAtZero: true,
+                                    max: 100,
+                                    position: 'right',
+                                    title: {
+                                        display: true,
+                                        text: 'Yüzde (%)'
+                                    },
+                                    grid: {
+                                        drawOnChartArea: false
+                                    }
+                                }
+                            },
+                            plugins: {
+                                title: {
+                                    display: true,
+                                    text: 'Birim Bazlı Uyarı Analizi'
+                                },
+                                tooltip: {
+                                    callbacks: {
+                                        label: function(context) {
+                                            let label = context.dataset.label || '';
+                                            if (label) {
+                                                label += ': ';
+                                            }
+                                            if (context.dataset.yAxisID === 'y1') {
+                                                label += context.raw + '%';
+                                            } else {
+                                                label += context.raw;
+                                            }
+                                            return label;
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     });
-                    
-                    if (response.ok) {
-                        successfulOrders.push(order.id);
-                    } else {
-                        failedOrders.push({
-                            id: order.id,
-                            error: `API hatası: ${response.status}`
-                        });
-                    }
                 } catch (error) {
-                    console.error(`Sipariş gönderme hatası (${order.id}):`, error);
-                    failedOrders.push({
-                        id: order.id,
-                        error: error.message
-                    });
+                    console.error('Uyarı analiz grafiği oluşturulurken hata:', error);
                 }
-            }
-            
-            // Başarılı siparişleri localStorage'dan kaldır
-            if (successfulOrders.length > 0) {
-                const remainingOrders = pendingOrders.filter(order => !successfulOrders.includes(order.id));
-                localStorage.setItem('pendingOrders', JSON.stringify(remainingOrders));
-                
-                // Başarı mesajı göster
-                showNetworkStatusNotification(`${successfulOrders.length} sipariş başarıyla senkronize edildi`, 'success');
-                
-                // EventBus bildirimi
-                if (window.eventBus) {
-                    window.eventBus.emit(window.SystemEvents.SYNC_COMPLETED, {
-                        type: 'orders',
-                        successful: successfulOrders.length,
-                        failed: failedOrders.length,
-                        total: pendingOrders.length
-                    });
-                }
-            }
-            
-            // Başarısız siparişler için bildirim
-            if (failedOrders.length > 0) {
-                console.warn(`${failedOrders.length} sipariş senkronize edilemedi`, failedOrders);
-                
-                if (window.eventBus) {
-                    window.eventBus.emit('orders:syncFailed', {
-                        count: failedOrders.length,
-                        orders: failedOrders
-                    });
-                }
-            }
-            
-            return {
-                successful: successfulOrders.length,
-                failed: failedOrders.length,
-                total: pendingOrders.length
-            };
-        }
-        
-        // Bekleyen malzeme işlemlerini kontrol et
-        async function checkPendingMaterials() {
-            // Malzeme işlemleri için benzer bir mantık
-            const pendingMaterials = JSON.parse(localStorage.getItem('pendingMaterials') || '[]');
-            if (pendingMaterials.length > 0) {
-                console.log(`${pendingMaterials.length} bekleyen malzeme işlemi bulundu`);
-                // İşlem yapılabilir...
-            }
-        }
-        
-        // Bekleyen doküman işlemlerini kontrol et
-        async function checkPendingDocuments() {
-            // Doküman işlemleri için benzer bir mantık
-            const pendingDocuments = JSON.parse(localStorage.getItem('pendingDocuments') || '[]');
-            if (pendingDocuments.length > 0) {
-                console.log(`${pendingDocuments.length} bekleyen doküman işlemi bulundu`);
-                // İşlem yapılabilir...
-            }
-        }
-        
-        // Çevrimdışı işlemi kaydet
-        function handleOfflineOperation(operationType, data) {
-            try {
-                console.log(`Çevrimdışı işlem kaydediliyor: ${operationType}`, data);
-                
-                switch (operationType) {
-                    case 'ORDER_ADD':
-                        saveOrderLocally(data);
-                        break;
-                    case 'MATERIAL_UPDATE':
-                        saveMaterialUpdateLocally(data);
-                        break;
-                    case 'DOCUMENT_UPLOAD':
-                        saveDocumentUploadLocally(data);
-                        break;
-                    case 'API_REQUEST':
-                        saveApiRequestLocally(data);
-                        break;
-                    default:
-                        console.warn('Tanımlanmamış çevrimdışı işlem tipi:', operationType);
-                }
-                
-                // Bildirim göster
-                showNetworkStatusNotification('İşleminiz çevrimdışı kaydedildi. İnternet bağlantısı sağlandığında otomatik olarak senkronize edilecektir.', 'warning');
-                
-            } catch (error) {
-                console.error('Çevrimdışı işlem kaydedilemedi:', error);
-                showNetworkStatusNotification('İşleminiz kaydedilemedi. Lütfen internet bağlantınızı kontrol edin.', 'warning');
-            }
-        }
-        
-        // Siparişi yerel depolamada sakla
-        function saveOrderLocally(orderData) {
-            // Önceki bekleyen siparişleri al
-            const pendingOrders = JSON.parse(localStorage.getItem('pendingOrders') || '[]');
-            
-            // Yeni siparişi ekle
-            pendingOrders.push({
-                ...orderData,
-                timestamp: Date.now(),
-                syncAttempts: 0
-            });
-            
-            // Bekleyen siparişleri kaydet
-            localStorage.setItem('pendingOrders', JSON.stringify(pendingOrders));
-            
-            console.log('Sipariş yerel depoya kaydedildi');
-            return true;
-        }
-        
-        // Malzeme güncelleme işlemini yerel depolamada sakla
-        function saveMaterialUpdateLocally(updateData) {
-            // Benzer mantıkla malzeme güncellemelerini sakla
-            const pendingUpdates = JSON.parse(localStorage.getItem('pendingMaterials') || '[]');
-            pendingUpdates.push({
-                ...updateData,
-                timestamp: Date.now(),
-                syncAttempts: 0
-            });
-            localStorage.setItem('pendingMaterials', JSON.stringify(pendingUpdates));
-        }
-        
-        // Doküman yükleme işlemini yerel depolamada sakla
-        function saveDocumentUploadLocally(documentData) {
-            // Benzer mantıkla doküman yüklemelerini sakla
-            const pendingDocs = JSON.parse(localStorage.getItem('pendingDocuments') || '[]');
-            pendingDocs.push({
-                ...documentData,
-                timestamp: Date.now(),
-                syncAttempts: 0
-            });
-            localStorage.setItem('pendingDocuments', JSON.stringify(pendingDocs));
-        }
-        
-        // API isteğini yerel depolamada sakla
-        function saveApiRequestLocally(requestData) {
-            // API isteklerini sakla
-            const pendingRequests = JSON.parse(localStorage.getItem('pendingRequests') || '[]');
-            pendingRequests.push({
-                ...requestData,
-                timestamp: Date.now(),
-                syncAttempts: 0
-            });
-            localStorage.setItem('pendingRequests', JSON.stringify(pendingRequests));
-        }
-        
-        // Hata bildirim gösterme - burada bootstrap toast kullanılıyor
-        function showErrorNotification(message, type = 'error') {
-            // Görsel bildirim göster
-            showNetworkStatusNotification(message, type === 'error' ? 'danger' : 'warning');
-            
-            // EventBus ile bildirim gönder
-            if (window.eventBus) {
-                window.eventBus.emit(window.SystemEvents.APP_ERROR, {
-                    message,
-                    type,
-                    timestamp: new Date().toISOString()
-                });
-            }
-        }
-        
-        // Hata kaydetme
-        function logError(error, source = 'general') {
-            console.error(`[${source.toUpperCase()}] Hata:`, error);
-            
-            try {
-                // Hata bilgilerini hazırla
-                const errorData = {
-                    message: error.message || 'Bilinmeyen hata',
-                    stack: error.stack || '',
-                    source: source,
-                    url: window.location.href,
-                    timestamp: new Date().toISOString(),
-                    userAgent: navigator.userAgent
-                };
-                
-                // Hata loglarını sakla
-                const errorLogs = JSON.parse(localStorage.getItem('errorLogs') || '[]');
-                errorLogs.push(errorData);
-                
-                // Maksimum 50 log tutulur
-                if (errorLogs.length > 50) {
-                    errorLogs.shift(); // En eski logu çıkar
-                }
-                
-                localStorage.setItem('errorLogs', JSON.stringify(errorLogs));
-                
-                // EventBus ile diğer modüllere bildir
-                if (window.eventBus) {
-                    window.eventBus.emit('error:logged', errorData);
-                }
-                
-                // Normalde burada bir API çağrısı yapılarak hata sunucuya gönderilebilir
-                
-            } catch (loggingError) {
-                console.error('Hata kaydedilirken ek hata oluştu:', loggingError);
-            }
-        }
-        
-        // Sayfa hazır olduğunda başlangıç işlemleri yap
-        document.addEventListener('DOMContentLoaded', () => {
-            setupInitialState();
-        });
-        
-        // Başlangıç durumu kurulumu
-        function setupInitialState() {
-            // Mevcut oturum bilgisini kontrol et
-            const savedUser = localStorage.getItem('user');
-            if (savedUser) {
-                try {
-                    const user = JSON.parse(savedUser);
-                    // Kullanıcı adını göster
-                    const userDropdownEl = document.querySelector('#userDropdown');
-                    if (userDropdownEl && user.name) {
-                        userDropdownEl.innerHTML = `<i class="bi bi-person-circle"></i> ${user.name}`;
-                    }
-                    
-                    // Oturum durumunu bildir
-                    if (window.eventBus) {
-                        window.eventBus.emit(window.SystemEvents.USER_LOGIN, user);
-                    }
-                } catch (error) {
-                    console.error('Oturum bilgisi işlenirken hata:', error);
-                    localStorage.removeItem('user');
-                }
-            }
-            
-            // Çevrimiçi durumunu kontrol et
-            if (navigator.onLine) {
-                console.log('Başlangıç durumu: Çevrimiçi');
-            } else {
-                console.warn('Başlangıç durumu: Çevrimdışı');
-                handleOfflineStatus();
             }
         }
     </script>
